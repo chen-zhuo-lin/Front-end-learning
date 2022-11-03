@@ -1158,3 +1158,264 @@ delete info.age
 
 
 # 八、JavaScript的DOM操作
+
+## 8.1 深入理解DOM
+
+- 浏览器会对我们编写的HTML、CSS进行渲染，同时它又要考虑我们可能会通过JavaScript来对其进行操作：
+
+  - 于是浏览器将我们编写在HTML中的每一个元素（Element）都抽象成了一个个对象
+  - 所有这些对象都可以通过JavaScript来对其进行访问，那么我们就可以通过JavaScript来操作页面；
+  - 所以，我们将这个抽象过程称之为 文档对象模型（Document Object Model）；
+
+- 整个文档被抽象到 document 对象中：
+
+  - 比如`document.documentElement`对应的是`html元素`；
+
+  - 比如`document.body`对应的是`body元素`；
+
+  - 比如`document.head`对应的是`head元素`；
+
+  - 比如`document.doctype`对应的是`文档声明 <!DOCTYPE html>`
+
+    ```javascript
+    console.log(document.doctype)
+    console.log(document.documentElement)       
+    console.log(document.head)
+    console.log(document.body)            
+    ```
+
+    
+
+## 8.2 DOM Tree的理解
+
+- 一个页面不只是有html、head、body元素，也包括很多的子元素：
+
+  - 在html结构中，最终会形成一个`树结构`；
+
+  - 在抽象成DOM对象的时候，它们也会形成一个`树结构`，我们称之为`DOM Tree`；
+
+    ```html
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+    <body>
+        <h1>A Heading</h1>
+        <a href="#">Link Text</a>
+    </body>
+    </html>
+    ```
+
+
+
+## 8.3 节点（Node）之间的导航（navigator）
+
+- 如果我们获取到一个节点（Node）后，可以根据这个节点去获取其他的节点，我们称之为节点之间的导航。
+
+- 节点之间存在如下的关系：
+
+  - 父节点：`parentNode`
+  - 前兄弟节点：`previousSibling`
+  - 后兄弟节点：`nextSibling`
+  - 子节点：`childNodes`
+  - 第一个子节点：`firstChild`
+  - 最后一个子节点：`lastChild`
+
+  ```html
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Document</title>
+  </head>
+  <body>
+      <div class="box">
+          第一个节点
+          <!-- 我是注释 -->
+          <h1 class="title">我是标题</h1>
+          <div class="container">我是div元素</div>
+          <div class="desc">我是一个段落</div>
+          最后一个节点
+      </div>
+      <script>
+          const bodyEl = document.body
+          const boxEl = bodyEl.firstChild.nextSibling
+          // 获取第一个节点
+          const firstNode = boxEl.firstChild
+          // 获取注释
+          const memo = firstNode.nextSibling
+          // 获取标题
+          const title = memo.nextSibling.nextSibling
+          // 获取最后一个节点
+          // 获取div元素
+          const containerEl = title.nextSibling.nextSibling
+          const lastNode = boxEl.lastChild
+      </script>
+  </body>
+  </html>
+  ```
+
+
+
+## 8.4 元素（Element）之间的导航（navigator）
+
+- 如果我们获取到一个元素（Element）后，可以根据这个元素去获取其他的元素，我们称之为元素之间的导航。
+
+- 元素之间存在如下的关系：
+
+  - 父元素：`parentElement`
+  - 前兄弟元素：`previousElementSibling`
+  - 后兄弟元素：`nextElementSibling`
+  - 子元素：`children`
+  - 第一个子元素：`firstElementChild`
+  - 最后一个子元素:`lastElementChild`
+
+  ```html
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Document</title>
+  </head>
+  <body>
+      <div class="box">
+          第一个节点
+          <!-- 我是注释 -->
+          <h1 class="title">我是标题</h1>
+          <div class="container">我是div元素</div>
+          <div class="desc">我是一个段落</div>
+          最后一个节点
+      </div>
+      <script>
+          const bodyEl = document.body
+          // 获取div.box元素
+          const boxEl = bodyEl.firstElementChild
+  			 // 获取h1.title元素
+          const titleEl = boxEl.firstElementChild
+          // 获取div.container元素
+          const containerEl = titleEl.nextElementSibling
+          // 获取div.desc元素
+          const descEl = boxEl.lastElementChild
+      </script>
+  </body>
+  </html>
+  ```
+
+
+
+## 8.5 表格（table）元素的导航（navigator）
+
+- `<table>`元素支持 (除了上面给出的，之外) 以下这些属性：
+  - `table.rows` —  元素的集合；
+  - `table.caption/tHead/tFoot` — 引用元素 <caption> ，<thead>，<tfoot>；
+  - `table.tBodies` —  <tbody>元素的集合；
+- <thead>,<tfoot>,<tbody> 元素提供了rows属性;
+  - `tbody.rows`  ~ 表格内部 <tr> 元素的集合
+- <tr>:
+  - `tr.cells` ~ 在给定 <tr> 中的 <td> 和 <th> 单元格的集合
+  - `tr.sectionRowIndex` — 给定的 <tr> 在封闭的 <thead> / <tbody> / <tfoot>  中的位置（索引）；
+  - `tr.rowIndex` — 在整个表格中 <tr> 的编号（包括表格的所有行）；
+- <td> 和 <th>：
+  - `td.cellIndex` — 在封闭的 <tr> 中单元格的编号。
+
+
+
+## 8.6 获取元素的方法
+
+-  DOM为我们提供了获取元素的方法：
+
+  |         方法名         |   搜索方式   | 可以在元素上调用? | 实时的? |
+  | :--------------------: | :----------: | :---------------: | :-----: |
+  |     querySelector      | CSS-selector |         ✔         |    -    |
+  |    querySelectorAll    | CSS-selector |         ✔         |    -    |
+  |     getElementById     |      id      |         -         |    -    |
+  |   getElementsByName    |     name     |         -         |    ✔    |
+  |  getElementsByTagName  | tag or ' * ' |         ✔         |    ✔    |
+  | getElementsByClassName |    class     |         ✔         |    ✔    |
+
+- 目前最常用的是querySelector和querySelectAll；
+
+- `getElementById`偶尔也会使用或者在适配一些低版本浏览器时；
+
+
+
+## 8.7 节点的类型 - nodeType
+
+- 常见的节点类型有如下：
+
+  |          常量           |  值  | 描述                                                         |
+  | :---------------------: | :--: | :----------------------------------------------------------- |
+  |    Node.ELEMENT_NODE    |  1   | 一个 元素 节点，例如 <p> 和 <div>                            |
+  |     Node.TEXT_NODE      |  3   | Element 或者 Attr 中实际的 文字                              |
+  |    Node.COMMENT_NODE    |  8   | 一个 Comment 节点。                                          |
+  |   Node.DOCUMENT_NODE    |  9   | 一个 Document 节点。                                         |
+  | Node.DOCUMENT_TYPE_NODE |  10  | 描述文档类型的 DocumentType 节点。例如 <!DOCTYPE html> 就是用于 HTML5 的。 |
+
+
+
+## 8.8 节点的属性
+
+- `nodeName`：获取node节点的名字；
+
+- `tagName`：获取元素的标签名词；
+
+- tagName 和 nodeName 之间有什么不同呢？
+
+  - `tagName `属性仅适用于 Element 节点；
+  - `nodeName `是为任意 Node 定义的：
+    - 对于元素，它的意义与 tagName 相同，所以使用哪一个都是可以的；
+    - 对于其他节点类型（text，comment 等），它拥有一个对应节点类型的字符串；
+
+- `innerHTML` 属性
+
+  - 将元素中的 HTML 获取为字符串形式；
+  - 设置元素中的内容；
+
+- `outerHTML` 属性
+
+  - 包含了元素的完整 HTML
+  - innerHTML 加上元素本身一样；
+
+- `textContent` 属性
+
+  - 仅仅获取元素中的文本内容;
+
+- `innerHTML`和`textContent`的区别：
+
+  - 使用 `innerHTML`，我们将其“作为 HTML”插入，带有所有 HTML 标签。
+  - 使用 `textContent`，我们将其“作为文本”插入，所有符号（symbol）均按字面意义处理。
+
+- `nodeValue/data` 
+
+  - 用于获取非元素节点的文本内容
+
+  ```javascript
+  var text = document.body.firstChild
+  var comment = text.nodeValue	
+  console.log(comment.nodeValue)
+  ```
+
+- `hidden`属性：也是一个全局属性，可以用于设置元素隐藏。
+
+  ```html
+  <body>
+    <div class="box">哈哈哈哈 </div>
+    
+    <script>
+    	var boxEl = document.querySelector('.box')
+      boxEl.hidden = true
+    </script>
+  </body>
+  ```
+
+  
+
+- 
