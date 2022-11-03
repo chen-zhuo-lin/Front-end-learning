@@ -1415,7 +1415,3 @@ delete info.age
     </script>
   </body>
   ```
-
-  
-
-- 
