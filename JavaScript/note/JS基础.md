@@ -1415,3 +1415,1053 @@ delete info.age
     </script>
   </body>
   ```
+
+
+
+## 8.9 元素的特性attribute
+
+- 属性attribute的分类：
+
+  - 标准的attribute：某些attribute属性是标准的，比如id、class、href、type、value等；
+
+  - 非标准的attribute：某些attribute属性是自定义的，比如abc、age、height等；
+
+    ```html
+    <div class="box" id="main" name="why" abc="anc" age="18" height="1.88">
+      哈哈哈哈
+    </div>
+    ```
+
+- attribute的操作:
+
+  - `elem.hasAttribute(name)` — 检查特性是否存在。
+
+  - `elem.getAttribute(name)` — 获取这个特性值。
+
+  - `elem.setAttribute(name, value)` — 设置这个特性值。
+
+  - `elem.removeAttribute(name)` — 移除这个特性。
+
+  - `attributes`：attr对象的集合，具有name、value属性；
+
+    ```JavaScript
+    for(var attr of boxEl.attributes){
+      console.log(attr.name, attr.value)
+    }
+    boxEl.hasAttribute("age") // true
+    boxEl.getAttribute("name") // why
+    boxEl.setAttribute("name", "kobe")
+    boxEl.removeAttribute("abc")
+    ```
+
+- attribute具备以下特征：
+
+  - 它们的名字是大小写不敏感的（id 与 ID 相同）。
+  - 它们的值总是字符串类型的。
+
+
+
+## 8.10 元素的属性property
+
+- 对于标准的attribute，会在DOM对象上创建与其对应的property属性：
+
+- 在大多数情况下，它们是相互作用的
+
+  - 改变`property`，通过`attribute`获取的值，会随着改变；
+  - 通过`attribute`操作修改，`property`的值会随着改变；
+    - 但是input的value修改只能通过attribute的方法；
+
+- 除非特别情况，大多数情况下，设置、获取attribute，推荐使用property的方式：
+
+  - 这是因为它默认情况下是有类型的；
+
+    ```javascript
+    toggleBtn.onclick = function(){
+      checkBoxInput.checked = !checkBoxInput.checked
+    }
+    ```
+
+
+
+## 8.11 HTML5的data-*自定义属性
+
+- 前面我们有学习HTML5的data-*自定义属性，那么它们也是可以在dataset属性中获取到的：	
+
+  ```html
+  <div class="box" data-name="why" data-age="18">
+  	我是box元素
+  </div>
+  
+  <script>
+  	var boxEl = document.querySelector(".box")
+    console.log(boxEl.dataset.name)
+    console.log(boxEl.dataset.age)
+  </script>
+  ```
+
+
+
+## 8.12 元素的className和classList
+
+- 元素的class attribute，对应的property并非叫class，而是`className`：
+
+  - 这是因为JavaScript早期是不允许使用class这种关键字来作为对象的属性，所以DOM规范使用了`className`；
+  - 虽然现在JavaScript已经没有这样的限制，但是并不推荐，并且依然在使用`className`这个名称；
+
+- 我们可以对className进行赋值，它会替换整个类中的字符串。
+
+  ```javascript
+  var boxEl = document.querySelector(".box")
+  boxEl.className = "why abc"
+  ```
+
+- 如果我们需要添加或者移除单个的class，那么可以使用classList属性。
+
+- elem.classList 是一个特殊的对象：
+
+  - `elem.classList.add (class)` ：添加一个类。
+  - `elem.classList.remove(class)`：添加/移除类。
+  - `elem.classList.toggle(class)` ：如果类不存在就添加类，存在就移除它。
+  - `elem.classList.contains(class)`：检查给定类，返回 true/false。
+
+- classList是`可迭代对象`，可以通过`for of`进行遍历。
+
+
+
+## 8.13 元素的style属性
+
+- 如果需要单独修改某一个CSS属性，那么可以通过style来操作：
+
+  - 对于多词（multi-word）属性，使用驼峰式 camelCase
+
+    ```javascript
+    boxEl.style.width = "100px"
+    boxEl.style.height = "100px"
+    boxEl.style.backgroundColor = "red"
+    ```
+
+- 如果我们将值设置为空字符串，那么会使用CSS的默认样式：
+
+  ```javascript
+  boxEl.style.display = ""
+  ```
+
+- 多个样式的写法，我们需要使用cssText属性：
+
+  - 不推荐这种用法，因为它会替换整个字符串；
+
+    ```javascript
+    boxEl.style.cssText = `
+            width: 100px;
+            height: 100px;
+            background-color: red'`
+    ```
+
+
+
+## 8.14 元素style的读取 - getComputedStyle
+
+- 如果我们需要读取样式：
+
+  - 对于`内联样式`，是可以`通过style.*的方式`读取到的;
+  - 对于`style、css文件中的样式`，是`读取不到`的；
+
+- 这个时候，我们可以通过`getComputedStyle`的全局函数来实现：
+
+  ```javascript
+  console.log(getComputedStyle(boxEl).width)
+  console.log(getComputedStyle(boxEl).height)
+  console.log(getComputedStyle(boxEl).backgroundColor)
+  ```
+
+  
+
+## 8.15 创建元素
+
+- 前面我们使用过 document.write 方法写入一个元素：
+
+  - 这种方式写起来非常便捷，但是对于复杂的内容、元素关系拼接并不方便；
+  - 它是在早期没有DOM的时候使用的方案，目前依然被保留了下来;
+
+- 那么目前我们想要插入一个元素，通常会按照如下步骤：
+
+  - `步骤一`：创建一个元素;
+  - `步骤二`：插入元素到DOM的某一个位置；
+
+- 创建元素：`document.createElement(tag)`
+
+  ```javascript
+  var boxEl = document.querySelector(".box")
+  var h2El = document.createElement("h2")
+  h2El.innerHTML = "我是标题"
+  h2El.classList.add("title")
+  boxEl.append(h2El)
+  ```
+
+
+
+## 8.16 插入元素
+
+- 插入元素的方式如下：
+  - `node.append(...nodes or strings)` —— 在 node 末尾 插入节点或字符串，
+  - `node.prepend(...nodes or strings)` —— 在 node 开头 插入节点或字符串，
+  - `node.before(...nodes or strings)` —— 在 node 前面 插入节点或字符串，
+  - `node.after(...nodes or strings)` —— 在 node 后面 插入节点或字符串，
+  - `node.replaceWith(...nodes or strings)` —— 将 node 替换为给定的节点或字符串。
+
+
+
+## 8.17 移除和克隆元素
+
+- 移除元素我们可以调用元素本身的remove方法：
+
+  ```javascript
+  setTimeout(() => {
+  	h2El.remove()
+  },2000)
+  ```
+
+- 如果我们想要复制一个现有的元素，可以通过cloneNode方法：
+
+  - 可以传入一个`Boolean类型的值`，来决定·是否是深度克隆·；
+
+  - 深度克隆会克隆对应元素的子元素，否则不会；
+
+    ```JavaScript
+    var cloneBoxEl = boxEl.cloneNode(true)
+    document.body.append(cloneBoxEl)
+    ```
+
+
+
+## 8.18 旧的元素操作方法
+
+- `parentElem.appendChild(node)`：
+  - 在parentElem的父元素最后位置添加一个子元素
+- `parentElem.insertBefore(node, nextSibling)`：
+  - 在parentElem的nextSibling前面插入一个子元素；
+- `parentElem.replaceChild(node, oldChild)`：
+  - 在parentElem中，新元素替换之前的oldChild元素；
+- `parentElem.removeChild(node)`：
+  - 在parentElem中，移除某一个元素；
+
+
+
+## 8.19 元素的大小、滚动
+
+- `clientWidth`：contentWith+padding（不包含滚动条）
+- `clientHeight`：contentHeight+padding
+- `clientTop`：border-top的宽度
+- `clientLeft`：border-left的宽度
+
+
+
+- `offsetWidth`：元素完整的宽度
+
+- `offsetHeight`：元素完整的高度
+- `offsetLeft`：距离父元素的x
+- `offsetHeight`：距离父元素的y
+
+
+
+- `scrollHeight`：整个可滚动的区域高度
+- `scrollTop`：滚动部分的高度
+
+
+
+## 8.20 window的大小、滚动
+
+- window的width和height	
+  - `innerWidth`、`innerHeight`：获取window窗口的宽度和高度（包含滚动条）
+  - `outerWidth`、`outerHeight`：获取window窗口的整个宽度和高度（包括调试工具、工具栏）
+  - `documentElement.clientHeight`、``：获取html的宽度和高度（不包含滚动条）
+- window的滚动位置：
+  - `scrollX`：X轴滚动的位置（别名pageXOffset）
+  - `scrollY`：Y轴滚动的位置（别名pageYOffset）
+- 也有提供对应的滚动方法：
+  - `方法 scrollBy(x,y)`：将页面滚动至 相对于当前位置的 (x, y) 位置；
+  - `方法 scrollTo(pageX,pageY)`： 将页面滚动至 绝对坐标；
+
+
+
+# 九、JavaScript的事件处理
+
+## 9.1 事件（Event）监听的方式
+
+- 事件监听方式一：在script中直接监听（很少使用）；
+
+- 事件监听方式二：DOM属性，通过元素的on来监听事件；
+
+- 事件监听方式三：通过EventTarget中的addEventListener来监听；
+
+  ```html
+  <div class="box" onclick="alert('box点击')"></div>
+  <script>
+    box.onclick = function() {
+      alert("box点击2")
+    }
+    box.addEventListener('click',function() {
+      alert("box点击3")
+    })
+  </script>
+  ```
+
+
+
+## 9.2 事件冒泡和事件捕获
+
+- 我们会发现默认情况下事件是`从最内层的span向外依次传递的顺序`，这个顺序我们称之为`事件冒泡（Event Bubble）`;
+- 事实上，还有另外一种监听事件流的方式就是`从外层到内层（body -> span）`，这种称之为`事件捕获（Event Capture）`；
+- 为什么会产生两种不同的处理流呢？
+  - 这是因为早期浏览器开发时，不管是`IE还是Netscape公司都发现了这个问题`;
+  - 但是他们采用了`完全相反的事件流来对事件进行了传递`；
+  - IE采用了`事件冒泡的方式`，Netscape采用了`事件捕获的方式`；
+- `捕获阶段（Capturing phase）`：
+  - 事件（从 Window）向下走近元素。
+- `目标阶段（Target phase）`：
+  - 事件到达目标元素。
+- `冒泡阶段（Bubbling phase）`：
+  - 事件从元素上开始冒泡。
+- 事实上，我们可以通过event对象来获取当前的阶段：
+  - eventPhase
+- 开发中通常会使用`事件冒泡`，所以事件捕获了解即可。
+
+
+
+## 9.3 事件对象event
+
+- 当一个事件发生时，就会有和这个事件相关的很多信息：
+
+  - 比如`事件的类型是什么`，你点击的是`哪一个元素`，`点击的位置`是哪里等等相关的信息；
+  - 那么这些信息会被封装到一个`Event`对象中，这个对象由`浏览器`创建，称之为`event对象`；
+  - 该对象给我们提供了想要的一些属性，以及可以通过该对象进行某些操作；
+
+- 如何获取这个event对象呢？
+
+  - `event对象`会在`传入的事件处理（event handler）函数回调`时，被系统传入；
+
+  - 我们可以在回调函数中拿到这个`event对象`；
+
+    ```javascript
+    spanEl.onclick = function(event){
+      console.log("事件对象：",event)
+    }
+    spanEl.addEventListener("click", function(event){
+      console.log("事件对象：", event)
+    })
+    ```
+
+- event常见的属性：
+
+  - `type`：事件的类型；
+  - `target`：当前事件发生的元素；
+  - `currentTarget`：当前处理事件的元素；
+  - `eventPhase`：事件所处的阶段；
+  - `offsetX、offsetY`：事件发生在元素内的位置；
+  - `clientX、clientY`：事件发生在客户端内的位置；
+  - `pageX、pageY`：事件发生在客户端相对于document的位置；
+  - `screenX、screenY`：事件发生相对于屏幕的位置；
+
+- event常见的方法：
+
+  - `preventDefault`：取消事件的默认行为；
+  - `stopPropagation`：阻止事件的进一步传递（冒泡或者捕获都可以阻止）；
+
+- 事件处理中的this
+
+  - 在函数中，我们也可以通过this来获取当前的发生元素：
+
+  ```javascript
+  boxEl.addEventListener("click", function(event){
+    console.log(this === event.target) // true
+  })
+  ```
+
+
+
+## 9.4 EventTarget类
+
+- 我们会发现，所有的节点、元素都继承自EventTarget
+
+  - 事实上Window也继承自`EventTarget`；
+
+- 那么这个EventTarget是什么呢？
+
+  - EventTarget是一个`DOM接口`，主要用于`添加、删除、派发Event事件`；
+
+- EventTarget常见的方法：
+
+  - `addEventListener`：注册某个事件类型以及事件处理函数；
+
+  - `removeEventListener`：移除某个事件类型以及事件处理函数；
+
+  - `dispatchEvent`：派发某个事件类型到EventTarget上；
+
+    ```javascript
+    var boxEl = document.querySelector(".box")
+    boxEl.addEventListener("click", function(){
+      console.log("点击了box")
+    })
+    boxEl.addEventListener("click",function(){
+      window.dispatchEvent(new Event("czl"))
+    })
+    window.addEventListener("czl",function(event){
+      console.log("监听到czl事件：",event)
+    })
+    ```
+
+
+
+## 9.5 事件委托（event delegation）
+
+- 事件冒泡在某种情况下可以帮助我们实现强大的事件处理模式 – 事件委托模式（也是一种设计模式）
+
+- 那么这个模式是怎么样的呢？
+
+  - 因为`当子元素被点击`时，父元素可以`通过冒泡可以监听到子元素的点击`；
+  - 并且`可以通过event.target获取到当前监听的元素`；
+
+- 案例：一个ul中存放多个li，点击某一个li会变成红色
+
+  - 方案一：监听`每一个li的点击`，并且`做出相应`；
+
+  - 方案二：在`ul中监听点击`，并且`通过event.target拿到对应的li进行处理`；
+
+    - 因为这种方案并不需要遍历后给每一个li上添加事件监听，所以它更加高效；
+
+      ```javascript
+      var listEl = document.querySelector(".list")
+      var currentActive = null
+      listEl.addEventListener("click", function(event){
+        if (currentActive) currentActive.classList.remove("active")
+        event.target.classList.add("active")
+        currentActive = event.target
+      })
+      ```
+
+- 事件委托的标记
+
+  - 某些事件委托可能需要对具体的子组件进行区分，这个时候我们可以使用data-*对其进行标记：
+
+  - 比如多个按钮的点击，区分点击了哪一个按钮：
+
+    ```html
+    <div class="btn-list">
+     	<button data-action="new">新建</button>
+     	<button data-action="search">搜索</button>
+     	<button data-action="delete">删除</button>
+    </div>
+    
+    <script>
+    	var bthListEl = document.querySelector(".btn-list")
+      bthListEl.addEventListener("click", function(event){
+        var action = event.target.dataset.action
+        switch(action){
+          case "new":
+            console.log("点击了新建")
+            break
+          case "search":
+            console.log("点击了搜索")
+            break
+          case "delete":
+            console.log("点击了删除")
+            break
+          default:
+            console.log("位置action")
+        }
+      })
+    </script>
+    ```
+
+
+
+## 9.6 常见的鼠标事件
+
+- 接下来我们来看一下常见的鼠标事件（不仅仅是鼠标设备，也包括模拟鼠标的设备，比如手机、平板电脑）
+
+- 常见的鼠标事件：
+
+  |     属性      |                          描述                           |
+  | :-----------: | :-----------------------------------------------------: |
+  |    `click`    |         `当用户点击某个对象时调用的事件句柄。`          |
+  | `contextmenu` |        `在用户点击鼠标右键打开上下文菜单时触发`         |
+  |  `dblclick`   |         `当用户双击某个对象时调用的事件句柄。`          |
+  |   mousedown   |               mousedown 鼠标按钮被按下。                |
+  |    mouseup    |                    鼠标按键被松开。                     |
+  |   mouseover   |       mouseover 鼠标移到某元素之上。（支持冒泡）        |
+  |   mouseout    |             鼠标从某元素移开。（支持冒泡）              |
+  |  mouseenter   | mouseenter 当鼠标指针移动到元素上时触发。（不支持冒泡） |
+  |  mouseleave   |        当鼠标指针移出元素时触发。（不支持冒泡）         |
+  |   mousemove   |                      鼠标被移动。                       |
+
+
+
+## 9.7 常见的键盘事件
+
+- 常见的键盘事件：
+
+  |    属性    |         描述         |
+  | :--------: | :------------------: |
+  | onkeydown  | 某个键盘按键被按下。 |
+  | onkeypress | 某个键盘按键被按下。 |
+  |  onkeyup   | 某个键盘按键被松开。 |
+
+- 事件的执行顺序是 onkeydown、onkeypress、onkeyup
+
+  - `down`事件先发生；
+  - `press`发生在文本被输入；
+  - `up`发生在文本输入完成；
+
+- 我们可以通过key和code来区分按下的键：
+
+  - `code`：“按键代码”（"KeyA"，"ArrowLeft" 等），特定于键盘上按键的物理位置。
+  - `key`：字符（"A"，"a" 等），对于非字符（non-character）的按键，通常具有与 code 相同的值。）
+
+
+
+## 9.8 常见的表单事件
+
+|   属性   | 描述                                                         |
+| :------: | :----------------------------------------------------------- |
+| onchange | 该事件在表单元素的内容改变时触发(<input> ,<keygen> ,<select>, 和<textarea> ) |
+| oninput  | 元素获取用户输入时触发                                       |
+| onfocus  | 元素获取焦点时触发                                           |
+|  onblur  | 元素失去焦点时触发                                           |
+| onreset  | 表单重置时触发                                               |
+| onsubmit | 表单提交时触发                                               |
+
+
+
+## 9.9 文档加载事件
+
+- `DOMContentLoaded`：浏览器已完全加载 HTML，并构建了 DOM 树，但像 ![img]() 和样式表之类的外部资源可能尚未加载完成。
+
+- `load`：浏览器不仅加载完成了 HTML，还加载完成了所有外部资源：图片，样式等。
+
+  ```html
+  <div>哈哈哈</div>
+  <img src="https://ossweb-img.qq.com.jpg" alt="">
+  
+  <script>
+  	window.addEventListener("DOMContentLoaded", function(){
+      var imgEl =  document.querySelector("img")
+      console.log("页面内容加载完毕",imgEl.offsetWidth, imgEl.offsetHeight)
+    })
+  	window.addEventListener("load", function(){
+      var imgEl =  document.querySelector("img")
+      console.log("页面所有内容加载完毕",imgEl.offsetWidth, imgEl.offsetHeight)
+    })  
+  </script>
+  ```
+
+
+
+## 9.10 CSS事件
+
+- CSS 事件：
+
+  - `transitionend` —— 当一个 CSS 动画完成时。
+
+    ```html
+    <div class="box">box盒子</div>
+    
+    <script>
+    	var boxEl = document.querySelector(".box")
+      boxEl.addEventListener("transitionend", function(){
+        console.log("div盒子动画加载完毕")
+      })
+    </script>
+    ```
+
+
+
+## 9.11 window定时器方法
+
+- 有时我们并不想立即执行一个函数，而是等待特定一段时间之后再执行，我们称之为`“计划调用（scheduling a call）”`。
+
+- 目前有两种方式可以实现：
+
+  - `setTimeout` 允许我们将函数`推迟到一段时间间隔之后`再执行。
+  - `setInterva`允许我们`重复运行一个函数`，从一段`时间间隔之后开始运行`，之后以该时间间隔`连续重复运行该函数`。
+
+- 并且通常情况下有提供对应的取消方法：
+
+  - `clearTimeout`：取消setTimeout的定时器；
+  - `clearInterval`：取消setInterval的定时器；
+
+- `setTimeout`的语法：`let timeId = setTimeout(func|code,[delay],[arg1],[aeg2],...)`
+
+  - `func|code`：想要执行的函数或代码字符串。
+  - `delay`：执行前的延时，以毫秒为单位（1000 毫秒 = 1 秒），默认值是 0；
+  - `arg1，arg2…`：要传入被执行函数（或代码字符串）的参数列表；
+
+- clearTimeout方法：
+
+  - `setTimeout `在调用时会返回一个`“定时器标识符（timer identifier）”`，我们可以使用它来取消执行。
+
+    ```javascript
+    var timeID = setTimeout(function(name,age){
+      console.log("定时器：",name,age)
+    },2000,"why",18)
+    clearTimeout(timeID)
+    ```
+
+- `setInterval`的语法：`let timeId = setInterval(func|code,[delay],[arg1],[aeg2],...)`
+
+  - `func|code`：想要执行的函数或代码字符串。
+  - `delay`：执行前的延时，以毫秒为单位（1000 毫秒 = 1 秒），默认值是 0；
+  - `arg1，arg2…`：要传入被执行函数（或代码字符串）的参数列表；
+
+- `clearInterval`方法：
+
+  - `setInterval`也会返回一个`“定时器标识符（timer identifier）”`，我们可以通过clearInterval来取消这个定时器。
+
+    ```javascript
+    var timeID = setInterval(function(name,age){
+      console.log("定时器：",name,age)
+    },2000,"why",18)
+    setInterval(timeID)
+    ```
+
+
+
+# 十、JavaScript的BOM操作
+
+## 10.1 认识BOM
+
+- BOM：浏览器对象模型（Browser Object Model）
+  - 简称 `BOM`，由`浏览器提供的用于处理文档（document）之外的所有内容的其他对象`；
+  - 比如`navigator、location、history`等对象；
+- JavaScript有一个非常重要的运行环境就是浏览器
+  - 而且浏览器本身又作为一个应用程序需要对其本身进行操作；
+  - 所以通常浏览器会有对应的`对象模型（BOM，Browser Object Model）`；
+  - 我们可以将BOM看成是连接JavaScript脚本与浏览器窗口的桥梁；
+- `BOM`主要包括以下的对象模型：
+  - `window`：包括全局属性、方法，控制浏览器窗口相关的属性、方法；
+  - `location`：浏览器连接到的对象的位置（URL）；
+  - `history`：操作浏览器的历史；
+  - `navigator`：用户代理（浏览器）的状态和标识（很少用到）；
+  - `screen`：屏幕窗口信息（很少用到）；
+
+
+
+## 10.2 window对象
+
+- window对象在浏览器中可以从两个视角来看待：
+  - `视角一：全局对象。`
+    - 我们知道ECMAScript其实是有一个全局对象的，这个全局对象在`Node中是global`；
+    - 在浏览器中就是`window对象`；
+  - `视角二：浏览器窗口对象。`
+    - 作为`浏览器窗口时，提供了对浏览器操作的相关的API`；
+- 当然，这两个视角存在大量重叠的地方，所以不需要刻意去区分它们：
+  - 事实上对于`浏览器和Node中全局对象名称不一样的情况`，目前已经指定了对应的标准，称之为`globalThis`，并且大多数现代浏览器都支持它；
+  - 放在`window对象`上的所有属性都可以被访问；
+  - 使用`var定义的变量会被添加到window对象`中；
+  - window默认给我们提供了全局的函数和类：`setTimeout、Math、Date、Object`等；
+
+- window常见的属性:
+
+  ```javascript
+  // 浏览器高度
+  console.log(window.outerHeight)
+  console.log(window.innerHeight)
+  
+  console.log("screenX:",window.screenX)
+  console.log("screenY:",window.screenY)
+  
+  //监听
+  window.addEventListener("scroll",(event) =>{
+    console.log(window.scrollX)
+    console.log(window.scrollY)
+  })
+  ```
+
+- window常见的方法
+
+  ```javascript
+  // close方法
+  const closeBtn = document.querySelector("#close")
+  closeBtn.onclick = function(){
+    window.close()
+  }
+  
+  // scrollTo
+  const scrollBtn = document.querySelector("#scroll")
+  closeBtn.onclick = function(){
+    window.scrollTo({top: 1000 })
+  }
+  
+  // 打开新创建
+  const openBtn = document.querySelector("#open")
+  openBtn.onclick = function(){
+    window.open("./about.html", "_self")
+  }
+  ```
+
+- window常见的事件
+
+  ```javascript
+  window.onfoucs = function(){
+    console.log("窗口获取到焦点")
+  }
+  
+  window.onblur = function(){
+    console.log("窗口失去焦点")
+  }
+  
+  // 整个页面以及所有的资源都加载完成
+  window.onload = function(){
+    console.log("页面加载完成")
+  }
+  
+  // hash改变
+  const hashBtn = document.querySelector("#hash")
+  hashBtn.onclick = function(){
+    location.hash = 'aaa'
+  }
+  window.onhashchange = function() {
+    console.log("hash被改变了")
+  }
+  ```
+
+
+
+## 10.3 location对象
+
+- location对象用于表示window上当前链接到的URL信息。
+
+- location对象常见的属性：
+
+  - `href`: 当前window对应的超链接URL, 整个URL；
+  - `protocol`: 当前的协议；
+  - `host`: 主机地址；
+  - `hostname`: 主机地址(不带端口)；
+  - `port`: 端口；
+  - `pathname`: 路径；
+  - `search`: 查询字符串；
+  - `hash`: 哈希值；
+  - username：URL中的username（很多浏览器已经禁用）；
+  - password：URL中的password（很多浏览器已经禁用）；
+
+- Location对象常见的方法：
+
+  - assign：赋值一个新的URL，并且跳转到该URL中；
+
+  - replace：打开一个新的URL，并且跳转到该URL中（不同的是不会在浏览记录中留下之前的记录）；
+
+  - reload：重新加载页面，可以传入一个Boolean类型；
+
+    ```javascript
+    const locationBtn.onclick = document.querySelector("#location")
+    locationBtn.onclick = function(){
+      location.assign("http://www.baidu.com")
+      location.replace("http://www.baidu.com")
+      location.reload()
+    }
+    ```
+
+
+
+## 10.4 URLSearchParams
+
+- URLSearchParams 定义了一些实用的方法来处理 URL 的查询字符串。
+
+  - 可以将一个字符串转化成URLSearchParams类型；
+
+  - 也可以将一个URLSearchParams类型转成字符串；
+
+    ```JavaScript
+    var urlsearch = new URLSearchParams("name=why&age=18&height=1.88")
+    consol.log(urlsearch.get("name")) // why
+    console.log(urlsearch.toSrting()) // name=why&age=18&height=1.88
+    ```
+
+- URLSearchParams常见的方法有如下：
+
+  - `get`：获取搜索参数的值；
+  - `set`：设置一个搜索参数和值；
+  - `append`：追加一个搜索参数和值；
+  - `has`：判断是否有某个搜索参数；
+
+
+
+## 10.5 history对象
+
+- history对象允许我们访问浏览器曾经的会话历史记录。
+
+- 有两个属性：
+
+  - `length`：会话中的记录条数；
+  - `state`：当前保留的状态值；
+
+- 有五个方法：
+
+  - `back()`：返回上一页，等价于history.go(-1)；
+
+  - `forward()`：前进下一页，等价于history.go(1)；
+
+  - `go()`：加载历史中的某一页；
+
+  - `pushState()`：打开一个指定的地址；
+
+  - `replaceState()`：打开一个新的地址，并且使用replace；
+
+    ```JavaScript
+    console.log(history.length)
+    console.log(history.state)
+    
+    const jumpBtn = document.querySelector("#jump")
+    const backBtn = document.querySelector("#back")
+    
+    jumpBtn.onclick = function(){
+      history.pushState({name: "why"}, "11", "aaa")
+      console.log(history.length,history.state)
+    }
+    
+    backBtn.onclick = function(){
+      history.back()
+      console.log(history.length,history.state)
+    }
+    ```
+
+- history和hash目前是vue、react等框架实现路由的底层原理。
+
+
+
+## 10.6 navigator对象（很少使用）
+
+- navigator 对象表示用户代理的状态和标识等信息。
+
+  | 属性/方法                     | 说明                                                         |
+  | ----------------------------- | ------------------------------------------------------------ |
+  | locks                         | 返回暴露 Web Locks API 的 LockManger 对象                    |
+  | meidaCapabilities             | 返回暴露 Media Capabilities API 的 MediaCapabilities 对象    |
+  | mediaDevices                  | 返回可用的媒体信息                                           |
+  | maxTouchPoints                | 返回设备触摸屏支持的最大触点数                               |
+  | mimeTypes                     | 返回浏览器中注册的 MIME 类型数组                             |
+  | onLine                        | 返回布尔值，表示浏览器是否联网                               |
+  | oscpu                         | 返回浏览器运行设备的操作系统和（或）CPU                      |
+  | permissions                   | 返回暴露 Permissions API 的 permissions对象                  |
+  | platform                      | 返回浏览器运行的系统平台                                     |
+  | plugins                       | 返回浏览器安装的插件数组。在IE中，这个数组包含页面中所有<embed>元素 |
+  | product                       | 返回产品名称（通常是"Gecko"）                                |
+  | productSub                    | 返回产品的额外信息（通常是Gecko的版本）                      |
+  | registerProtocolHandler()     | 将一个网站注册为特定协议的处理程序                           |
+  | requestMediaKeySystemAccess() | 返回一个期约，解决为 MediaKeySystemAccess 对象               |
+  | sendBeacon()                  | 异步传输一些小数据                                           |
+  | serviceWorker                 | 返回用来与 ServiceWorker 实例交互的 ServiceWorkerContainer   |
+  | share()                       | 返回当前平台的原生共享机制                                   |
+  | storage                       | 返回暴露 Storage API 的 StorageManager 对象                  |
+  | userAgent                     | 返回浏览器的用户代理字符串                                   |
+  | vendor                        | 返回浏览器的厂商名称                                         |
+  | vendorSub                     | 返回浏览器厂商的更多信息                                     |
+  | vibrate()                     | 触发设备振动                                                 |
+  | webdriver                     | 返回浏览器当前是否被自动化程序粗控制                         |
+
+
+
+## 10.7 screen对象（很少使用）
+
+- screen主要记录的是浏览器窗口外面的客户端显示器的信息：
+
+  - 比如屏幕的逻辑像素 screen.width、screen.height；
+
+    | 属性        | 说明                                         |
+    | ----------- | -------------------------------------------- |
+    | availHeight | 屏幕像素高度减去系统组件高度（只读）         |
+    | availLeft   | 没有被系统组件占用的屏幕的最左侧像素（只读） |
+    | availTop    | 没有被系统组件占用的屏幕的最顶端像素（只读） |
+    | availWidth  | 屏幕像素宽度减去系统组件宽度（只读）         |
+    | colorDepth  | 表示屏幕颜色的位数：多数系统是32（只读）     |
+    | height      | 屏幕像素高度                                 |
+    | left        | 当前屏幕左边的像素距离                       |
+    | pixelDepth  | 屏幕的位深（只读）                           |
+    | top         | 当前屏幕顶端的像素距离                       |
+    | width       | 屏幕像素高度                                 |
+    | orientation | 返回 Screen Orientation API 中屏幕的朝向     |
+
+
+
+## 10.8 JSON
+
+- 在目前的开发中，JSON是一种非常重要的`数据格式`，它并不是`编程语言`，而是一种可以在服务器和客户端之间传输的数据格式。
+- JSON的全称是JavaScript Object Notation（JavaScript对象符号）：
+  - JSON是由`Douglas Crockford构想和设计的一种轻量级资料交换格式，算是JavaScript的一个子集`；
+  - 虽然`JSON被提出来的时候是主要应用JavaScript中，但是目前已经独立于编程语言，可以在各个编程语言中`使用；
+  - 很多编程语言都实现了`将JSON转成对应模型的方式`；
+
+- 其他的传输格式：
+
+  - `XML`：在早期的网络传输中主要是使用XML来进行数据交换的，但是这种格式在解析、传输等各方面都弱于JSON，所以目前已经很少在被使用了；
+  - `Protobuf`：另外一个在网络传输中目前已经越来越多使用的传输格式是protobuf，但是直到2021年的3.x版本才支持JavaScript，所以目前在前端使用的较少；
+
+- 目前JSON被使用的场景也越来越多：
+
+  - `网络数据的传输JSON数据`；
+  - `项目的某些配置文件`；
+  - `非关系型数据库（NoSQL）将json作为存储格式`；
+
+- **JSON的顶层支持三种类型的值**：
+
+  - `简单值`：数字（Number）、字符串（String，不支持单引号）、布尔类型（Boolean）、null类型；
+
+  - `对象值`：由key、value组成，key是字符串类型，并且必须添加双引号，值可以是简单值、对象值、数组值；
+
+  - `数组值`：数组的值可以是简单值、对象值、数组值；
+
+    ```json
+    123
+    
+    {
+      name: 'why',
+      "age": 18,
+      "friend": {
+      	"name": "kobe"
+      }
+    }
+    
+    [
+      123,
+      "abc",
+      {
+        "name": "kobe"
+      }
+    ]
+    ```
+
+- 在ES5中引用了**JSON全局对象**，该对象有两个**常用的方法**：
+
+  - `stringify方法`：将JavaScript类型转成对应的JSON字符串；
+  - `parse方法`：解析JSON字符串，转回对应的JavaScript类型；
+
+- 那么上面的代码我们可以通过如下的方法来使用：
+
+  ```JavaScript
+  // 转成字符串保存
+  const objString = JSON.stringify(obj)
+  localStorage.setItem("info", objString)
+  
+  // 获取字符串转回对象
+  const itemString = localStorage.getItem("info")
+  const info = JSON.parse(itemString)
+  console.log(info)
+  ```
+
+- **JSON.stringify()** 方法将一个 JavaScript 对象或值转换为 JSON 字符串：
+
+  - 如果指定了一个 `replacer 函数`，则可以`选择性地替换值`；
+
+  - 如果`指定的 replacer 是数组`，则可`选择性地仅包含数组指定的属性`；
+
+    ```javascript
+    // 转成字符串
+    const objString1 = JSON.stringify(obj)
+    // {"name":"why","age":18,"friend":{"name:kobe"},"hobbies":["篮球","足球","乒乓球"]}
+    console.log(objString1)
+    
+    // replace参数是一个数组	
+    const objString2 = JSSON.stringify(obj, ["name","age"])
+    // {"name":"why","age":18}
+    console.log(objString2)
+    
+    // replace参数是一个函数
+    const objString3 = JSON.stringify(obj, (key,value) =>{
+      console.log(key, value)
+      if (key === "name"){
+        return "chenzhuolin"
+      }
+      return value
+    })
+    
+    // {"name":"chenzhuolin","age":18,"friend":{"name:kobe"},"hobbies":["篮球","足球","乒乓球"]}
+    console.log(objString3)
+    ```
+
+  - 如果对象本身包含toJSON方法，那么会直接使用toJSON方法的结果：
+
+    ```JavaScript
+    const obj = {
+      name: "why",
+      age: 18,
+      friend: {
+        name: "kobe"
+      },
+      hobbies: ['篮球','足球','乒乓球'],
+      toJSON: function(){
+        return "chenzhuolin"
+      }
+    }
+    
+    const objString5 = JSON.stringify(obj)
+    console.log(objString5) // chenzhuolin
+    ```
+
+- **JSON.parse()** 方法用来解析JSON字符串，构造由字符串描述的JavaScript值或对象。
+
+  - 提供可选的 **reviver** 函数用以在返回之前对所得到的对象执行变换(操作)。
+
+    ```javascript
+    // 转回对象,并且转换某些值
+    const info2 = JSON.parse(objString, (key, value) => {
+      if (key === "time") {
+        return new Date(value)
+      }
+      return value
+    })
+    console.log(info2)
+    ```
+
+
+
+## 10.9 Storage
+
+- WebStorage主要提供了一种机制，可以让浏览器提供一种比cookie更直观的key、value存储方式：
+
+  - `localStorage`：本地存储，提供的是一种`永久性的存储方法`，在关闭掉网页重新打开时，存储的内容依然保留；
+
+  - `sessionStorage`：会话存储，提供的是`本次会话的存储`，在关闭掉会话时，存储的内容会被清除；
+
+    ```javascript
+    localStorage.setItem("name", "localStorage")
+    sessionStorage.setItem("name", "sessionStorage")
+    ```
+
+- localStorage和sessionStorage的区别:
+
+  - 验证一：关闭网页后重新打开，localStorage会保留，而sessionStorage会被删除；
+  - 验证二：在页面内实现跳转，localStorage会保留，sessionStorage也会保留；
+  - 验证三：在页面外实现跳转（打开新的网页），localStorage会保留，sessionStorage不会被保留；
+
+- Storage常见的属性:
+
+  - `Storage.length`：只读属性
+    - 返回一个整数，表示存储在Storage对象中的数据项数量；
+
+- Storage常见的方法:
+
+  - `Storage.key()`：该方法接受一个数值n作为参数，返回存储中的第n个key名称；
+
+  - `Storage.getItem()`：该方法接受一个key作为参数，并且返回key对应的value；
+
+  - `Storage.setItem()`：该方法接受一个key和value，并且将会把key和value添加到存储中。
+
+    - 如果key存储，则更新其对应的值；
+
+  - `Storage.removeItem()`：该方法接受一个key作为参数，并把该key从存储中删除；
+
+  - `Storage.clear()`：该方法的作用是清空存储中的所有key；
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
