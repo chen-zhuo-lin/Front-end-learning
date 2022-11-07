@@ -571,284 +571,9 @@
 
 
 
-# 五、JavaScript函数
+# 五、JavaScript的内置类
 
-## 5.1 函数的返回值
-
-- 使用`return关键字`来返回结果；
-- 一旦在`函数中执行return操作`，那么当前函数会`终止`；
-- 如果函数中没有使用 return语句 ，那么函数有默认的返回值：`undefined`；
-- 如果函数使用 return语句，但是`return`后面没有任何值，那么函数的返回值也是：`undefined`；
-
-
-
-## 5.2 arguments参数
-
-- 默认情况下，arguments对象是所有（非箭头）函数中都可用的局部变量；
-- 该对象中存放着所有的调用者传入的参数，从0位置开始，依次存放；
-- arguments变量的类型是一个object类型（ array-like ），不是一个数组，但是和数组的用法看起来很相似；
-- 如果调用者传入的参数多余函数接收的参数，可以通过arguments去获取所有的参数；
-
-
-
-## 5.3 递归函数
-
-- **封装函数，求n的m次方**
-
-```javascript
-// for循环实现
-function pow1(n , m){
-  let result = 0
-  for(let i = 0;i < m;i++){
-    result *= n
-  }
-  return result
-}
-
-// 递归实现
-function pow2(n,m){
-  if(m === 1) return n
-  return n * pow1(n,m-1)
-}
-```
-
-
-
-## 5.4 局部变量和外部变量
-
-- **在JavaScript（ES5之前）中没有块级作用域的概念，但是函数可以定义自己的作用域。**
-  - 作用域（Scope）表示一些标识符的作用有效范围（所以也有被翻译为有效范围的）；
-  - 函数的作用域表示在函数内部定义的变量，只有在函数内部可以被访问到；
-- **外部变量和局部变量的概念：**
-  - 定义在函数内部的变量，被称之为局部变量（Local Variables）。
-  - 定义在函数外部的变量，被称之为外部变量（Outer Variables）。
-- **什么是全局变量？**
-  - 在函数之外声明的变量（在script中声明的），称之为全局变量。
-  - 全局变量在任何函数中都是可见的。
-  - 通过var声明的全局变量会在window对象上添加一个属性（了解）；
-- **在函数中，访问变量的顺序是什么呢？**
-  - 优先访问自己函数中的变量，没有找到时，在外部中访问。
-
-
-
-## 5.5 函数声明 vs 函数表达式
-
-- **首先，语法不同：**
-  - 函数声明：在主代码流中声明为单独的语句的函数。
-  - 函数表达式：在一个表达式中或另一个语法结构中创建的函数。
-- **其次，JavaScript创建函数的时机是不同的：**
-  - 函数表达式是在代码执行到达时被创建，并且仅从那一刻起可用。
-  - 在函数声明被定义之前，它就可以被调用
-
-
-
-## 5.6 回调函数（Callback Function）
-
-- **既然函数可以作为一个值相互赋值，那么也可以传递给另外一个函数。**
-
-- **高阶函数必须至少`满足两个条件之一`：**
-
-  - 接受一个或多个函数作为输入；
-  - 输出一个函数；
-
-- **`匿名（anonymous）函数`的理解**：
-
-  - 如果在传入一个函数时，我们没有指定这个函数的名词或者通过函数表达式指定函数对应的变量，那么这个函数称之为匿名函数。
-
-  ```JavaScript
-  // 高阶函数foo
-  function foo(fn){
-    fn()
-  }
-  foo(function (){
-      console.log("我是匿名函数被调用")
-  })
-  ```
-
-
-
-## 5.7 立即执行函数
-
-- **一个函数定义完后被立即执行；**
-
-  - 第一部分是定义了一个匿名函数，这个函数有自己独立的作用域。
-
-  - 第二部分是后面的（），表示这个函数被执行了
-
-    ```JavaScript
-    (function(){
-      console.log("立即执行函数")
-    })()
-    ```
-
-- **这个东西有什么用？**
-
-  - 会创建一个独立的执行上下文环境，可以避免外界访问或修改内部的变量，也避免了对内部变量的修改
-
-    ```JavaScript
-    var btns = document.querySelectorAll(".btn")
-    for(var i = 0;i < btns.length;i++){
-      (function(m){
-        btns[m].onclick = function(){
-          console.log(`第${m}个按钮被点击了`)
-        }
-      })(i)
-    }
-    ```
-
-
-
-# 六、JavaScript的面向对象
-
-## 6.1 对象的常见操作
-
-```javascript
-var message = "hello world"
-var info = {
-  name: '陈卓林',
-  age: 18,
-  // 方括号的使用
-  [message]:'你好，世界'
-}
-// 访问对象的属性
-var age = info.age
-var msg = info[message]
-
-// 修改对象的属性
-info.name = "刘德华"
-
-// 添加对象的属性
-info.height = 1.88
-
-// 删除对象的属性
-delete info.age
-```
-
-
-
-## 6.2 对象的遍历
-
-- **对象的遍历（迭代）**：表示获取对象中所有的属性和方法。
-
-  - Object.keys() 方法会返回一个由一个给定对象的自身可枚举属性组成的数组；
-
-- **遍历方式一**：普通for循环
-
-  ```javascript
-  var info = {
-    name: '陈卓林',
-    age: 18,
-    // 方括号的使用
-    [message]:'你好，世界'
-  }
-  var infoKeys = Object.keys(info)
-  for(var i = 0;i<infoKeys.length;i++){
-    var key = infoKeys[i]
-    var value = info[key]
-  }
-  ```
-
-- **遍历方式二**：for in 遍历方法
-
-  ```javascript
-  for(var key in info){
-    var value = info[key]
-  }
-  ```
-
-
-
-## 6.3 栈内存和堆内存
-
-- **原始类型**占据的空间是在**栈内存**中分配的；
-  - **原始类型的保存方式**：在变量中保存的是值本身，所以原始类型也被称之为值类型
-- **对象类型**占据的空间是在**堆内存**中分配的；
-  - **对象类型的保存方式**：在变量中保存的是对象的“引用”，所以对象类型也被称之为引用类型；
-
-
-
-## 6.4 this指向什么？
-
-- 在**全局环境**下面，this指向window；
-
-- 通过**对象**调用，this指向调用的对象；
-
-  ```javascript
-  function foo(){
-  	console.log(this) // window
-  }
-  foo()
-  
-  var obj = {
-    bar: function(){
-      console.log(this) // obj
-    }
-  }
-  obj.bar()
-  ```
-
-
-
-## 6.5 创建对象的方案 – 工厂函数
-
-- **工厂模式**其实是一种常见的**设计模式**；
-
-- **工厂函数的缺陷**：
-
-  - 在打印对象时，对象的类型都是Object类型
-
-  ```javascript
-  function createPerson(name,age,height){
-    var p = {}
-    p.name = name
-    p.age = age
-    p.height = height
-    
-    p.eating = function(){
-      console.log(this.name+'在吃东西')
-    }
-    return p
-  }
-  ```
-
-
-
-## 6.6 JavaScript中的类（ES5）
-
-- **JavaScript中的构造函数是怎么样的**？
-  - 构造函数也是一个普通的函数，从表现形式来说，和千千万万个普通的函数没有任何区别；
-  - 那么如果这么一个普通的函数被使用new操作符来调用了，那么这个函数就称之为是一个构造函数；
-- **如果一个函数被使用new操作符调用了，那么它会执行如下操作**：
-  1. 在内存中创建一个新的对象（空对象）；
-  2. 这个对象内部的[[prototype]]属性会被赋值为该构造函数的prototype属性；
-  3. 构造函数内部的this，会指向创建出来的新对象；
-  4. 执行函数的内部代码（函数体代码）；
-  5. 如果构造函数没有返回非空对象，则返回创建出来的新对象；
-
-
-
-## 6.7 创建对象的方案 – 构造函数（类）
-
-- 这个构造函数可以确保我们的对象是有Person的类型的；
-
-  ```JavaScript
-  function Person(name,age){
-    this.name = name
-    this.age = age
-    
-    this.eating = function(){
-      console.log(this.name+'在吃东西')
-    }
-  }
-  
-  const p1 = new Person('陈卓林',18)
-  ```
-
-
-
-# 七、JavaScript的内置类
-
-## 7.1 包装类型的使用过程
+## 5.1 包装类型的使用过程
 
 - **默认情况，`当我们调用一个原始类型的属性或者方法时，会进行如下操作`：**
   1. 根据原始值，创建一个原始类型对应的包装类型对象；
@@ -859,7 +584,7 @@ delete info.age
 
 
 
-## 7.2 Math对象
+## 5.2 Math对象
 
 - **Math常见的属性：**
   - Math.PI：圆周率，约等于 3.14159；
@@ -872,7 +597,7 @@ delete info.age
 
 
 
-## 7.3 Array数组
+## 5.3 Array数组
 
 - **访问数组中的元素：**
 
@@ -1069,7 +794,7 @@ delete info.age
 
 
 
-## 7.4 Date对象
+## 5.4 Date对象
 
 - **创建Date对象**
 
@@ -1158,9 +883,9 @@ delete info.age
 
 
 
-# 八、JavaScript的DOM操作
+# 六、JavaScript的DOM操作
 
-## 8.1 深入理解DOM
+## 6.1 深入理解DOM
 
 - **浏览器会对我们编写的HTML、CSS进行渲染，同时它又要考虑我们可能会通过JavaScript来对其进行操作：**
 
@@ -1187,7 +912,7 @@ delete info.age
 
     
 
-## 8.2 DOM Tree的理解
+## 6.2 DOM Tree的理解
 
 - **一个页面不只是有html、head、body元素，也包括很多的子元素：**
 
@@ -1213,7 +938,7 @@ delete info.age
 
 
 
-## 8.3 节点（Node）之间的导航（navigator）
+## 6.3 节点（Node）之间的导航（navigator）
 
 - 如果我们**获取到一个节点（Node）后**，可以**根据这个节点去获取其他的节点**，我们**称之为节点之间的导航。**
 
@@ -1264,7 +989,7 @@ delete info.age
 
 
 
-## 8.4 元素（Element）之间的导航（navigator）
+## 6.4 元素（Element）之间的导航（navigator）
 
 - 如果我们**获取到一个元素（Element）后**，可以**根据这个元素去获取其他的元素**，我们**称之为元素之间的导航。**
 
@@ -1312,7 +1037,7 @@ delete info.age
 
 
 
-## 8.5 表格（table）元素的导航（navigator）
+## 6.5 表格（table）元素的导航（navigator）
 
 - **`<table>`元素支持 (除了上面给出的，之外) 以下这些属性：**
   - `table.rows` —  元素的集合；
@@ -1329,7 +1054,7 @@ delete info.age
 
 
 
-## 8.6 获取元素的方法
+## 6.6 获取元素的方法
 
 |         方法名         |   搜索方式   | 可以在元素上调用? | 实时的? |
 | :--------------------: | :----------: | :---------------: | :-----: |
@@ -1360,7 +1085,7 @@ delete info.age
 
 
 
-## 8.8 节点的属性
+## 6.8 节点的属性
 
 - **`nodeName`：**获取node节点的名字；
 
@@ -1417,7 +1142,7 @@ delete info.age
 
 
 
-## 8.9 元素的特性attribute
+## 6.9 元素的特性attribute
 
 - **属性attribute的分类：**
 
@@ -1460,7 +1185,7 @@ delete info.age
 
 
 
-## 8.10 元素的属性property
+## 6.10 元素的属性property
 
 - **对于标准的attribute，会在DOM对象上创建与其对应的property属性：**
 
@@ -1482,7 +1207,7 @@ delete info.age
 
 
 
-## 8.11 HTML5的data-*自定义属性
+## 6.11 HTML5的data-*自定义属性
 
 - 前面我们有学习HTML5的data-*自定义属性，那么它们也是可以在dataset属性中获取到的：	
 
@@ -1500,7 +1225,7 @@ delete info.age
 
 
 
-## 8.12 元素的className和classList
+## 6.12 元素的className和classList
 
 - **元素的class attribute，对应的property并非叫class，而是`className`：**
 
@@ -1527,7 +1252,7 @@ delete info.age
 
 
 
-## 8.13 元素的style属性
+## 6.13 元素的style属性
 
 - **如果需要单独修改某一个CSS属性，那么可以通过style来操作：**
 
@@ -1558,7 +1283,7 @@ delete info.age
 
 
 
-## 8.14 元素style的读取 - getComputedStyle
+## 6.14 元素style的读取 - getComputedStyle
 
 - **如果我们需要读取样式：**
 
@@ -1575,7 +1300,7 @@ delete info.age
 
   
 
-## 8.15 创建元素
+## 6.15 创建元素
 
 - **前面我们使用过 document.write 方法写入一个元素：**
 
@@ -1599,7 +1324,7 @@ delete info.age
 
 
 
-## 8.16 插入元素
+## 6.16 插入元素
 
 - **插入元素的方式如下：**
   - `node.append(...nodes or strings)` —— 在 node 末尾 插入节点或字符串，
@@ -1610,7 +1335,7 @@ delete info.age
 
 
 
-## 8.17 移除和克隆元素
+## 6.17 移除和克隆元素
 
 - **移除元素我们可以调用元素本身的remove方法：**
 
@@ -1633,7 +1358,7 @@ delete info.age
 
 
 
-## 8.18 旧的元素操作方法
+## 6.18 旧的元素操作方法
 
 - `parentElem.appendChild(node)`：
   - 在parentElem的父元素最后位置添加一个子元素
@@ -1646,7 +1371,7 @@ delete info.age
 
 
 
-## 8.19 元素的大小、滚动
+## 6.19 元素的大小、滚动
 
 - `clientWidth`：contentWith+padding（不包含滚动条）
 - `clientHeight`：contentHeight+padding
@@ -1668,7 +1393,7 @@ delete info.age
 
 
 
-## 8.20 window的大小、滚动
+## 6.20 window的大小、滚动
 
 - **window的width和height**	
   - `innerWidth`、`innerHeight`：获取window窗口的宽度和高度（包含滚动条）
@@ -1683,9 +1408,9 @@ delete info.age
 
 
 
-# 九、JavaScript的事件处理
+# 七、JavaScript的事件处理
 
-## 9.1 事件（Event）监听的方式
+## 7.1 事件（Event）监听的方式
 
 - **事件监听方式一：**在script中直接监听（很少使用）；
 
@@ -1707,7 +1432,7 @@ delete info.age
 
 
 
-## 9.2 事件冒泡和事件捕获
+## 7.2 事件冒泡和事件捕获
 
 - 我们会发现默认情况下事件是`从最内层的span向外依次传递的顺序`，这个顺序我们称之为`事件冒泡（Event Bubble）`;
 - 事实上，还有另外一种监听事件流的方式就是`从外层到内层（body -> span）`，这种称之为`事件捕获（Event Capture）`；
@@ -1727,7 +1452,7 @@ delete info.age
 
 
 
-## 9.3 事件对象event
+## 7.3 事件对象event
 
 - **当一个事件发生时，就会有和这个事件相关的很多信息：**
 
@@ -1778,7 +1503,7 @@ delete info.age
 
 
 
-## 9.4 EventTarget类
+## 7.4 EventTarget类
 
 - **我们会发现，所有的节点、元素都继承自EventTarget**
 
@@ -1811,7 +1536,7 @@ delete info.age
 
 
 
-## 9.5 事件委托（event delegation）
+## 7.5 事件委托（event delegation）
 
 - 事件冒泡在某种情况下可以帮助我们实现强大的事件处理模式 – 事件委托模式（也是一种设计模式）
 
@@ -1874,7 +1599,7 @@ delete info.age
 
 
 
-## 9.6 常见的鼠标事件
+## 7.6 常见的鼠标事件
 
 - 接下来我们来看一下常见的鼠标事件（不仅仅是鼠标设备，也包括模拟鼠标的设备，比如手机、平板电脑）
 
@@ -1895,7 +1620,7 @@ delete info.age
 
 
 
-## 9.7 常见的键盘事件
+## 7.7 常见的键盘事件
 
 - **常见的键盘事件：**
 
@@ -1918,7 +1643,7 @@ delete info.age
 
 
 
-## 9.8 常见的表单事件
+## 7.8 常见的表单事件
 
 |   属性   | 描述                                                         |
 | :------: | :----------------------------------------------------------- |
@@ -1931,7 +1656,7 @@ delete info.age
 
 
 
-## 9.9 文档加载事件
+## 7.9 文档加载事件
 
 - `DOMContentLoaded`：浏览器已完全加载 HTML，并构建了 DOM 树，但像 ![img]() 和样式表之类的外部资源可能尚未加载完成。
 
@@ -1955,7 +1680,7 @@ delete info.age
 
 
 
-## 9.10 CSS事件
+## 7.10 CSS事件
 
 - CSS 事件：
 
@@ -1974,7 +1699,7 @@ delete info.age
 
 
 
-## 9.11 window定时器方法
+## 7.11 window定时器方法
 
 - 有时我们并不想立即执行一个函数，而是等待特定一段时间之后再执行，我们称之为`“计划调用（scheduling a call）”`。
 
@@ -2024,9 +1749,9 @@ delete info.age
 
 
 
-# 十、JavaScript的BOM操作
+# 八、JavaScript的BOM操作
 
-## 10.1 认识BOM
+## 8.1 认识BOM
 
 - **BOM：浏览器对象模型（Browser Object Model）**
   - 简称 `BOM`，由`浏览器提供的用于处理文档（document）之外的所有内容的其他对象`；
@@ -2044,7 +1769,7 @@ delete info.age
 
 
 
-## 10.2 window对象
+## 8.2 window对象
 
 - **window对象在浏览器中可以从两个视角来看待：**
   
@@ -2127,7 +1852,7 @@ delete info.age
 
 
 
-## 10.3 location对象
+## 8.3 location对象
 
 - location对象用于表示window上当前链接到的URL信息。
 
@@ -2163,7 +1888,7 @@ delete info.age
 
 
 
-## 10.4 URLSearchParams
+## 8.4 URLSearchParams
 
 - **URLSearchParams 定义了一些实用的方法来处理 URL 的查询字符串。**
 
@@ -2186,7 +1911,7 @@ delete info.age
 
 
 
-## 10.5 history对象
+## 8.5 history对象
 
 - history对象允许我们访问浏览器曾经的会话历史记录。
 
@@ -2229,7 +1954,7 @@ delete info.age
 
 
 
-## 10.6 navigator对象（很少使用）
+## 8.6 navigator对象（很少使用）
 
 - navigator 对象表示用户代理的状态和标识等信息。
 
@@ -2261,7 +1986,7 @@ delete info.age
 
 
 
-## 10.7 screen对象（很少使用）
+## 8.7 screen对象（很少使用）
 
 - screen主要记录的是浏览器窗口外面的客户端显示器的信息：
 
@@ -2283,7 +2008,7 @@ delete info.age
 
 
 
-## 10.8 JSON
+## 8.8 JSON
 
 - 在目前的开发中，JSON是一种非常重要的`数据格式`，它并不是`编程语言`，而是一种可以在服务器和客户端之间传输的数据格式。
 - **JSON的全称是JavaScript Object Notation（JavaScript对象符号）：**
@@ -2415,7 +2140,7 @@ delete info.age
 
 
 
-## 10.9 Storage
+## 8.9 Storage
 
 - **WebStorage主要提供了一种机制，可以让浏览器提供一种比cookie更直观的key、value存储方式：**
 
