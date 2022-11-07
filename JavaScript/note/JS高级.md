@@ -1437,8 +1437,192 @@ delete info.age
   }
   
   const p1 = new Person('陈卓林',18)
-  
   ```
+
+
+
+## 6.8 对属性操作的控制
+
+- 在前面我们的属性都是`直接定义在对象内部`，或者`直接添加到对象内部`的：
+
+  - 但是这样来做的时候我们就`不能对这个属性进行一些限制`：比如`这个属性是否是可以通过delete删除的`？这个属性`是否在for-in遍历的时候被遍历出来`呢？
+
+    ```JavaScript
+    var obj = {
+      name: "why",
+      age: 18,
+      height: 1.88
+    }
+    ```
+
+- 如果我们想要对`一个属性进行比较精准的操作控制`，那么我们就可以使用`属性描述符`。
+
+  - 通过属性描述符`可以精准的添加或修改对象的属性`；
+  - 属性描述符需要使用 `Object.defineProperty` 来对属性进行添加或者修改；
+
+
+
+## 6.9 Object.defineProperty
+
+- **Object.defineProperty()** 方法会直接在一个对象上定义一个新属性，或者修改一个对象的现有属性，并返回此对象。
+  - `Object.defineProperty(obj, prop, descriptor)`
+- 可接收三个参数：
+  - obj要定义属性的对象；
+  - prop要定义或修改的属性的名称或 Symbol；
+  - descriptor要定义或修改的属性描述符；
+- 返回值：
+  - 被传递给函数的对象。
+
+
+
+## 6.10 属性描述符分类
+
+- 属性描述符的类型有两种：
+
+  - `数据属性`（Data Properties）描述符（Descriptor）；
+
+  - `存取属性`（Accessor访问器 Properties）描述符（Descriptor）；
+
+    |            | configurable | enumerable | value | writable | get  | set  |
+    | ---------- | :----------: | :--------: | :---: | :------: | :--: | :--: |
+    | 数据描述符 |      √       |     √      |   √   |    √     |  ×   |  ×   |
+    | 存取描述符 |      √       |     √      |   ×   |    ×     |  √   |  √   |
+
+
+
+## 6.11 数据属性描述符
+
+- **数据数据描述符有如下四个特性：**
+- **[[Configurable]]**：表示属性是否可以通过 delete 删除属性，是否可以修改它的特性，或者是否可以将它修改为存取属性描述符；
+  - 当我们直接在一个对象上定义某个属性时，这个属性的**[[Configurable]]**为`true`；
+  - 当我们通过属性描述符定义一个属性时，这个属性的**[[Configurable]]**默认为`false`；
+- **[[Enumerable]]**：表示属性是否可以通过`for-in`或者`Object.keys()`返回该属性；
+  - 当我们直接在一个对象上定义某个属性时，这个属性的**[[Enumerable]]**为`true`；
+  - 当我们通过属性描述符定义一个属性时，这个属性的**[[Enumerable]]**默认为`false`；
+- **[[Writable]]**：表示是否可以修改属性的值；
+  - 当我们直接在一个对象上定义某个属性时，这个属性的**[[Writable]]**为`true`；
+  - 当我们通过属性描述符定义一个属性时，这个属性的**[[Writable]]**默认为`false`；
+- **[[value]]**：属性的value值，读取属性时会返回该值，修改属性时，会对其进行修改；
+  - 默认情况下这个值是undefined；
+
+
+
+## 6.12 存取属性描述符
+
+- **数据数据描述符有如下四个特性：**
+
+- **[[Configurable]]**：表示属性是否可以通过 delete 删除属性，是否可以修改它的特性，或者是否可以将它修改为存取属性描述符；
+
+  - 当我们直接在一个对象上定义某个属性时，这个属性的**[[Configurable]]**为true；
+  - 当我们通过属性描述符定义一个属性时，这个属性的**[[Configurable]]**默认为false；
+
+- **[[Enumerable]]**：表示属性是否可以通过`for-in`或者`Object.keys()`返回该属性；
+
+  - 当我们直接在一个对象上定义某个属性时，这个属性的**[[Enumerable]]**为`true`；
+  - 当我们通过属性描述符定义一个属性时，这个属性的**[[Enumerable]]**默认为`false`；
+
+- **[[get]]**：获取属性时会执行的函数。默认为`undefined`
+
+- **[[set]]**：设置属性时会执行的函数。默认为`undefined`
+
+  ```javascript
+  "use strict"
+  
+  var obj = {
+    name: "why",
+    age: 18
+  }
+  
+  let address = '北京市'
+  
+  Object.defineProperty(obj,"address", {
+    configurable: true,
+    enumerable: true,
+    get: function(){
+      return address
+    },
+    set: function(value){
+      address = value
+    }
+  })
+  ```
+
+
+
+## 6.13 同时定义多个属性
+
+- **Object.defineProperties()** 方法直接在一个对象上定义 **多个** 新的属性或修改现有属性，并且返回该对象。
+
+  ```JavaScript
+  var obj = {
+    _age: 18
+  }
+  
+  Object.defineProperties(obj, {
+    name: {
+      writable: true,
+      value: "why"
+    },
+    age: {
+      get: function() {
+        return this._age
+      }
+    }
+  })
+  ```
+
+
+
+## 6.14 对象方法补充
+
+- **获取对象的属性描述符：**
+
+  - getOwnPropertyDescriptor
+  - getOwnPropertyDescriptors
+
+- **禁止对象扩展新属性：preventExtensions**
+
+  - 给一个对象添加新的属性会失败（在严格模式下会报错）；
+
+- **密封对象，不允许配置和删除属性：seal**
+
+  - 实际是调用preventExtensions
+  - 并且将现有属性的configurable:false
+
+- **冻结对象，不允许修改现有属性： freeze**
+
+  - 实际上是调用seal
+  - 并且将现有属性的writable: false
+
+  ```javascript
+  var obj = {
+    name: "why",
+    age: 18
+  }
+  
+  // 1.获取属性描述符
+  console.log(Object.getOwnPropertyDescriptor(obj, "name"))
+  console.log(Object.getOwnPropertyDescriptors(obj))
+  
+  // 2.阻止对象的扩展
+  Object.preventExtensions(obj)
+  obj.address = "广州市"
+  console.log(obj)
+  
+  // 3.密封对象(不能进行配置)
+  Object.seal(obj)
+  delete obj.name
+  console.log(obj)
+  
+  // 4.冻结对象(不能进行写入)
+  Object.freeze(obj)
+  obj.name = "kobe"
+  console.log(obj)
+  ```
+
+  
+
+
 
 
 
