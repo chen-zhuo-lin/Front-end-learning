@@ -160,7 +160,7 @@
 
   1. 创建一个全新的对象；
 
-  2. 这个新对象会被执行prototype连接；
+  2. 这个对象内部的[[prototype]]属性会被赋值为该构造函数的prototype属性；
 
   3. 这个新对象会绑定到函数调用的this上（this的绑定在这个步骤完成）；
 
@@ -262,85 +262,19 @@
 
 
 
-## 1.8 箭头函数 arrow function
-
-- **箭头函数是ES6之后增加的一种编写函数的方法，并且它比函数表达式要更加简洁：**
-
-  - 箭头函数`不会绑定this、arguments属性`；
-  - 箭头函数`不能作为构造函数来使用`（不能和new一起来使用，会抛出错误）；
-
-- **箭头函数如何编写呢？**
-
-  - (): 函数的参数
-
-  - {}: 函数的执行体
-
-    ```javascript
-    nums.forEach((item, index, arr) => {
-      
-    })
-    ```
-
-- **箭头函数的编写优化**：
-
-  - **优化一: 如果只有一个参数()可以省略**
-
-    ```JavaScript
-    nums.forEach(item => {})
-    ```
-
-  - **优化二: 如果函数执行体中只有一行代码, 那么可以省略大括号**
-
-    - 并且这行代码的返回值会作为整个函数的返回值
-
-      ```java
-      nums.forEach(item => item)
-      ```
-
-  - **优化三: 如果函数执行体只有返回一个对象, 那么需要给这个对象加上()**
-
-    ```javascript
-    var foo = () => {
-      return { name: "abc"}
-    }
-    var bar = () => ({name: "abc"})
-    ```
-
-- **ES6箭头函数this**:
-
-  - **从ES6开始，我们会使用箭头函数;**
-
-    - 为什么在setTimeout的回调函数中可以直接使用this呢？
-
-    - 因为箭头函数并不绑定this对象，那么this引用就会从上层作用于中找到对应的this
-
-    ```javascript
-    var obj = {
-      data: [],
-      getData: function() {
-        console.log(obj)
-        setTimeout(() => {
-          // 模拟获取到的数据
-          var res = ["abc", "cba", "nba"];
-          this.data.push(...res)
-        }, 1000)
-      }
-    }
-    ```
-
-
-
 # 二、深入浏览器的渲染原理
 
 ## 2.1 浏览器的内核
 
-- 常见的浏览器内核有
+- ###### 常见的浏览器内核
+  
   - `Trident `（ 三叉戟）：IE、360安全浏览器、搜狗高速浏览器、百度浏览器、UC浏览器；
   - `Gecko`（ 壁虎） ：Mozilla Firefox；
   - `Presto`（急板乐曲）-> `Blink `（眨眼）：Opera
   - `Webkit `：Safari、360极速浏览器、搜狗高速浏览器、移动端浏览器（Android、iOS）
   - `Webkit `-> `Blink `：Google Chrome，Edge
 - 我们经常说的浏览器内核指的是浏览器的排版引擎：
+  
   - **排版引擎**（layout engine），也称为**浏览器引擎**（browser engine）、**页面渲染引擎**（rendering engine）或**样版引擎**。
 - 也就是一个网页下载下来后，就是由我们的渲染引擎来帮助我们解析的。
 
@@ -348,20 +282,24 @@
 
 ## 2.2 渲染引擎解析页面的详细流程
 
-- **解析一：HTML解析过程**
+- ###### 解析一：HTML解析过程
+  
   - 默认情况下服务器会给浏览器返回index.html文件，所以解析HTML是所有步骤的开始:
   - 解析HTML，会构建DOM Tree：
-- **解析二 – 生成CSS规则**
+- ###### 解析二 – 生成CSS规则
+  
   - 在解析的过程中，如果遇到CSS的link元素，那么会由浏览器负责下载对应的CSS文件：
     - 注意：下载CSS文件是不会影响DOM的解析的；
   - 浏览器下载完CSS文件后，就会对CSS文件进行解析，`解析出对应的规则树`：
     - 我们可以称之为 `CSSOM`（CSS Object Model，CSS对象模型）；
-- **解析三 – 构建Render Tree**
+- ###### 解析三 – 构建Render Tree
+  
   - 当有了DOM Tree和 CSSOM Tree后，就可以两个结合来构建`Render Tree`了
   - 注意一：`link元素不会阻塞DOM Tree的构建过程`，但是`会阻塞Render Tree的构建过程`
     - 这是因为Render Tree在构建时，需要对应的CSSOM Tree；
   - 注意二：`Render Tree和DOM Tree并不是一一对应的关系`，比如对于display为none的元素，压根不会出现在render tree中；
-- **解析四 – 布局（layout）和绘制（Paint）**
+- ###### 解析四 – 布局（layout）和绘制（Paint）
+  
   - 第四步是在渲染树（Render Tree）上运行`布局（Layout）`以计算每个节点的几何体。
     - 渲染树会表示显示哪些节点以及其他样式，但是`不表示每个节点的尺寸、位置`等信息；
     - 布局是确定呈现树中`所有节点的宽度、高度和位置信息`；
@@ -373,22 +311,27 @@
 
 ## 2.3 回流和重绘
 
-- **理解回流reflow：（也可以称之为重排）**
+- ###### 理解回流reflow：（也可以称之为重排）
+  
   - 第一次确定节点的大小和位置，称之为布局（layout）。
   - 之后对节点的大小、位置修改重新计算称之为回流。
-- **什么情况下引起回流呢？**
+- ###### 什么情况下引起回流呢？
+  
   - 比如DOM结构发生改变（添加新的节点或者移除节点）；
   - 比如改变了布局（修改了width、height、padding、font-size等值）
   - 比如窗口resize（修改了窗口的尺寸等）
   - 比如调用getComputedStyle方法获取尺寸、位置信息；
-- **理解重绘repaint：**
+- ###### 理解重绘repaint
+  
   - 第一次渲染内容称之为绘制（paint）。
   - 之后重新渲染称之为重绘。
-- **什么情况下会引起重绘呢？**
+- ###### 什么情况下会引起重绘呢？
+  
   - 比如修改背景色、文字颜色、边框颜色、样式等；
   - 回流一定会引起重绘，所以回流是一件很消耗性能的
     事情。
-- **避免回流的方式:**
+- ###### 避免回流的方式
+  
   1. 修改样式时`尽量一次性修改`;
      - 比如通过cssText修改，比如通过添加class修改
   2. 尽量`避免频繁的操作DOM`;
@@ -608,15 +551,18 @@
 
 ## 4.4 常见的GC算法
 
-- **引用计数：**
+- ###### 引用计数
+  
   - 当`一个对象有一个引用指向它`时，那么这个`对象的引用就+1`；
   - 当一个`对象的引用为0`时，这个对象就`可以被销毁掉`；
   - 这个算法有一个很大的弊端就是会产生循环引用；
-- **标记清除：**
+- ###### 标记清除
+  
   - 标记清除的核心思路是`可达性（Reachability）`
   - 这个算法是设置一个`根对象（root object），垃圾回收器`会定期`从这个根`开始，找所有从根开始`有引用到的对象`，对于那些`没有引用到的对象，就认为是不可用的对象`；
   - 这个算法`可以很好的解决循环引用`的问题；
-- **其他算法优化补充:**
+- ###### 其他算法优化补充
+  
   - **标记整理（Mark-Compact）** 和“标记－清除”相似；
     - 不同的是，回收期间同时会将保留的存储对象`搬运汇集到连续的内存空间`，从而`整合空闲空间，避免内存碎片化`；
   - **分代收集（Generational collection）**—— 对象被分成两组：`“新的”和“旧的”`。
@@ -741,16 +687,20 @@ function pow2(n,m){
 ## 5.4 局部变量和外部变量
 
 - **在JavaScript（ES5之前）中没有块级作用域的概念，但是函数可以定义自己的作用域。**
+  
   - 作用域（Scope）表示一些标识符的作用有效范围（所以也有被翻译为有效范围的）；
   - 函数的作用域表示在函数内部定义的变量，只有在函数内部可以被访问到；
-- **外部变量和局部变量的概念：**
+- ###### 外部变量和局部变量的概念：
+  
   - 定义在函数内部的变量，被称之为局部变量（Local Variables）。
   - 定义在函数外部的变量，被称之为外部变量（Outer Variables）。
-- **什么是全局变量？**
+- ###### 什么是全局变量？
+  
   - 在函数之外声明的变量（在script中声明的），称之为全局变量。
   - 全局变量在任何函数中都是可见的。
   - 通过var声明的全局变量会在window对象上添加一个属性（了解）；
-- **在函数中，访问变量的顺序是什么呢？**
+- ###### 在函数中，访问变量的顺序是什么呢？
+  
   - 优先访问自己函数中的变量，没有找到时，在外部中访问。
 
 
@@ -863,7 +813,7 @@ function pow2(n,m){
   console.log(arguments[2])
   ```
 
-- **arguments转Array**
+- ###### arguments转Array
 
   - **转化方式一：**
     - 遍历arguments，添加到一个新数组中；
@@ -905,50 +855,27 @@ function pow2(n,m){
 
 
 
-## 5.10 函数的剩余（rest）参数
+## 5.10 JavaScript纯函数
 
-- **ES6中引用了rest parameter，可以将不定数量的参数放入到一个数组中：**
-
-  - 如果最后一个参数是 ... 为前缀的，那么它会将剩余的参数放到该参数中，并且作为一个数组；
-
-    ```javascript
-    function foo(m,n,...args){
-      console.log(args)
-    }
-    ```
-
-- **那么剩余参数和arguments有什么区别呢？**
-
-  - 剩余参数只包含那些没有`对应形参的实参`，而 `arguments 对象包含了传给函数的所有实参`；
-  - `arguments对象不是一个真正的数组`，而`rest参数是一个真正的数组`，可以进行数组的所有操作；
-  - arguments是`早期的ECMAScript中`为了方便去获取所有的参数提供的一个数据结构，而rest参数是`ES6中提供`并且希望以此
-    来替代arguments的;
-
-- **剩余参数必须放到最后一个位置，否则会报错**。
-
-
-
-## 5.11 JavaScript纯函数
-
-- **纯函数的维基百科定义：**
+- ###### 纯函数的维基百科定义：
 
   - 在程序设计中，若一个函数`符合以下条件`，那么这个函数被称为纯函数：
   - 此函数`在相同的输入值时`，需`产生相同的输出`。
   - 函数的`输出和输入值以外的其他隐藏信息或状态无关`，也和`由I/O设备产生的外部输出`无关。
   - 该函数`不能有语义上可观察的函数副作用`，诸如`“触发事件”`，`使输出设备输出，或更改输出值以外物件的内容`等。
 
-- **当然上面的定义会过于的晦涩，所以我简单总结一下：**
+- ###### 简单总结:
 
   - `确定的输入，一定会产生确定的输出`；
   - `函数在执行过程中，不能产生副作用`；
 
-- **副作用概念的理解**:
+- ###### 副作用概念的理解:
 
   - **副作用（side effect）**其实本身是医学的一个概念，比如我们经常说吃什么药本来是为了治病，可能会产生一些其他的副作用；
   - 在计算机科学中，也引用了副作用的概念，表示`在执行一个函数`时，除了`返回函数值`之外，还对`调用函数产生了附加的影响`，比如`修改了全局变量，修改参数或者改变外部的存储`;
   - **纯函数在执行的过程中就是不能产生这样的副作用，副作用往往是产生`bug的 “温床”`。**
 
-- **纯函数的案例**
+- ###### 纯函数的案例
 
   - **我们来看一个对数组操作的两个函数：**
 
@@ -965,7 +892,7 @@ function pow2(n,m){
     var newNames2 = names.splice(0, 2)
     ```
 
-- **纯函数的作用和优势**:
+- ###### 纯函数的作用和优势:
 
   - 可以`安心的编写和安心的使用`；
   - 在`写的时候`保证了函数的纯度，只是`单纯实现自己的业务逻辑`即可，`不需要关心传入的内容`是如何获得的或者依赖`其他的外部变量`是否已经发生了修改；
@@ -973,9 +900,9 @@ function pow2(n,m){
 
 
 
-## 5.12 函数柯里化
+## 5.11 函数柯里化
 
-- **柯里化概念的理解**:
+- ###### 柯里化概念的理解:
 
   - **柯里化**也是属于**函数式编程**里面一个非常重要的概念。
     - 是一种关于函数的高阶技术；
@@ -990,7 +917,7 @@ function pow2(n,m){
   - 柯里化是一种函数的转换，将一个函数从可调用的 f(a, b, c) 转换为可调用的 f(a)(b)(c)。
     - 柯里化不会调用函数。它只是对函数进行。
 
-- **柯里化的代码转换**:
+- ###### 柯里化的代码转换
 
   ```javascript
   // 未柯里化的函数
@@ -1014,7 +941,7 @@ function pow2(n,m){
   add2(10)(20)(30)
   ```
 
-- **柯里化优势**:
+- ###### 柯里化优势
 
   - **函数的职责单一**
 
@@ -1041,50 +968,50 @@ function pow2(n,m){
       add5(10)
       ```
 
-  - **柯里化案例练习**
+- ###### 柯里化案例练习
 
-    - **案例，需求是打印一些日志：日志包括时间、类型、信息**；
+  - **案例，需求是打印一些日志：日志包括时间、类型、信息**；
 
-      ```JavaScript
-      // 普通函数
-      function log(date, type, message) {
-        console.log(`${date.getHours(),${type},${message}`)
-      }
-      
-      // 柯里化
-      var log = date => type => message => {
-        console.log(`${date.getHours(),${type},${message}`)
-      }
-      
-      var logNow = log(new Date())
-      ```
+    ```JavaScript
+    // 普通函数
+    function log(date, type, message) {
+      console.log(`${date.getHours(),${type},${message}`)
+    }
+    
+    // 柯里化
+    var log = date => type => message => {
+      console.log(`${date.getHours(),${type},${message}`)
+    }
+    
+    var logNow = log(new Date())
+    ```
 
-  - **自动柯里化函数**
+- ###### 自动柯里化函数
 
-    ```javascript
-    function hyCurrying(fn) {
-      return function curryFn(...args) {
-        // 两类操作:
-        // 第一类操作: 继续返回一个新的函数, 继续接受参数
-        // 第二类操作: 直接执行fn的函数
-        if (args.length >= fn.length) { // 执行第二类
-          // return fn(...args)
-          return fn.apply(this, args)
-        } else { // 执行第一类
-          return function(...newArgs) {
-            // return curryFn(...args.concat(newArgs))
-            return curryFn.apply(this, args.concat(newArgs))
-          }
+  ```javascript
+  function hyCurrying(fn) {
+    return function curryFn(...args) {
+      // 两类操作:
+      // 第一类操作: 继续返回一个新的函数, 继续接受参数
+      // 第二类操作: 直接执行fn的函数
+      if (args.length >= fn.length) { // 执行第二类
+        // return fn(...args)
+        return fn.apply(this, args)
+      } else { // 执行第一类
+        return function(...newArgs) {
+          // return curryFn(...args.concat(newArgs))
+          return curryFn.apply(this, args.concat(newArgs))
         }
       }
     }
-    ```
+  }
+  ```
 
 
 
-## 5.13 组合函数
+## 5.12 组合函数
 
-- **组合函数概念的理解**
+- ###### 组合函数概念的理解
 
   - **组合（Compose）函数**是在JavaScript开发过程中一种对函数的使用技巧、模式：
 
@@ -1112,7 +1039,7 @@ function pow2(n,m){
     caleFn(10)
     ```
 
-- **实现组合函数**
+- ###### 实现组合函数
 
   - **刚才我们实现的compose函数比较简单**
 
@@ -1144,7 +1071,7 @@ function pow2(n,m){
 
 
 
-## 5.14 with语句的使用
+## 5.13 with语句的使用
 
 - **with语句** 扩展一个语句的作用域链。
 
@@ -1164,7 +1091,7 @@ function pow2(n,m){
 
 
 
-## 5.15 eval函数
+## 5.14 eval函数
 
 - **内建函数 eval 允许执行一个代码字符串。**
 
@@ -1187,9 +1114,9 @@ function pow2(n,m){
 
 
 
-## 5.16 严格模式
+## 5.15 严格模式
 
-- **认识严格模式**
+- ###### 认识严格模式
 
   - **JavaScript历史的局限性：**
     - 长久以来，`JavaScript 不断向前发展且并未带来任何兼容性`问题；
@@ -1203,7 +1130,7 @@ function pow2(n,m){
     - 严格模式让`JS引擎在执行代码时可以进行更多的优化`（不需要对一些特殊的语法进行处理）；
     - 严格模式禁用了`在ECMAScript未来版本中可能会定义的一些语法`；
 
-- **开启严格模式:**
+- ###### 开启严格模式
 
   - **那么如何开启严格模式呢？严格模式支持粒度话的迁移：**
 
@@ -1235,24 +1162,20 @@ function pow2(n,m){
 
     - 现代 JavaScript 支持 “class” 和 “module” ，它们会自动启用 use strict；
 
-- **严格模式限制**:
+- ###### 严格模式限制
 
-  - **这里我们来说几个严格模式下的严格语法限制：**
-    - JavaScript被设计为新手开发者更容易上手，所以有时候本来错误语法，被认为也是可以正常被解析的；
-    - 但是这种方式可能给带来留下来安全隐患；
-    - 在严格模式下，这种失误就会被当做错误，以便可以快速的发现和修正；
-  - 1. **无法意外的创建全局变量**
-  - 2. **严格模式会使引起静默失败(silently fail,注:不报错也没有任何效果)的赋值操作抛出异常**
-  - 3. **严格模式下试图删除不可删除的属性**
-  - 4. **严格模式不允许函数参数有相同的名称**
-  - 5. **不允许0的八进制语法**
-  - 6. **在严格模式下，不允许使用with**
-  - 7. **在严格模式下，eval不再为上层引用变量**
-  - 8. **严格模式下，this绑定不会默认转成对象** 
+  1. 无法意外的创建全局变量
+  2. 严格模式会使引起静默失败(silently fail,注:不报错也没有任何效果)的赋值操作抛出异常
+  3. 严格模式下试图删除不可删除的属性
+  4. 严格模式不允许函数参数有相同的名称
+  5. 不允许0的八进制语法
+  6. 在严格模式下，不允许使用with
+  7. 在严格模式下，eval不再为上层引用变量
+  8. 严格模式下，this绑定不会默认转成对象
 
 
 
-## 5.17 手写apply、call、bind函数实现
+## 5.16 手写apply、call、bind函数实现
 
 - **接下来我们来实现一下apply、call、bind函数：**
 
@@ -1594,35 +1517,1225 @@ delete info.age
   - 实际上是调用seal
   - 并且将现有属性的writable: false
 
+- **hasOwnProperty**
+
+  - 对象是否有某一个属于自己的属性（不是在原型上的属性）
+
+- **in/for in 操作符**
+
+  - 判断某个属性是否在某个对象或者对象的原型上
+
+- **instanceof**
+
+  - 用于检测`构造函数（Person、Student类）的pototype`，是否出现在`某个实例对象的原型链`上
+
+- **isPrototypeOf**
+
+  - 用于检测`某个对象`，是否出现在`某个实例对象的原型链`上
+
+    ```javascript
+    var obj = {
+      name: "why",
+      age: 18
+    }
+    
+    // 1.获取属性描述符
+    console.log(Object.getOwnPropertyDescriptor(obj, "name"))
+    console.log(Object.getOwnPropertyDescriptors(obj))
+    
+    // 2.阻止对象的扩展
+    Object.preventExtensions(obj)
+    obj.address = "广州市"
+    console.log(obj)
+    
+    // 3.密封对象(不能进行配置)
+    Object.seal(obj)
+    delete obj.name
+    console.log(obj)
+    
+    // 4.冻结对象(不能进行写入)
+    Object.freeze(obj)
+    obj.name = "kobe"
+    console.log(obj)
+    ```
+
+
+
+# 七、JavaScript ES5中实现继承
+
+## 7.1 JavaScript中的原型
+
+- ###### 认识对象的原型
+  
+  - **JavaScript当中每个对象都有一个特殊的内置属性 [[prototype]]，这个特殊的对象可以指向另外一个对象。**
+  - **那么这个对象有什么用呢？**
+    - 当我们通过引用对象的`属性key来获取一个value`时，它会`触发 [[Get]]`的操作；
+    - 这个操作会`首先检查该对象是否有对应的属性`，如果有的话就使用它；
+    - `如果对象中没有该属性，那么会访问对象[[prototype]]内置属性指向的对象上的属性`；
+  - 那么如果通过字面量直接创建一个对象，这个对象也会有这样的属性吗？如果有，应该如何获取这个属性呢？
+    - 答案是有的，只要是对象都会有这样的一个内置属性；
+  - **获取的方式有两种：**
+    - 方式一：通过对象的 __proto__ 属性可以获取到（但是这个是早期浏览器自己添加的，存在一定的兼容性问题）；
+  - 方式二：通过` Object.getPrototypeOf `方法可以获取到；
+  
+- ###### 函数的原型 prototype
+
+  - **新的概念：所有的函数都有一个prototype的属性（注意：不是__proto__）**
+
+    ```javascript
+    function foo(){}foo.prototype
+    ```
+
+  - 是不是因为函数是一个对象，所以它有prototype的属性呢？
+
+    - 不是的，因为它是一个函数，才有了这个特殊的属性；
+    - 而不是它是一个对象，所以有这个特殊的属性；
+
+    ```javascript
+    var obj = {}
+    
+    obj.prototype // obj就没有这个属性
+    ```
+
+
+
+## 7.2 创建对象的内存表现
+
+![1667873764203](C:\Users\czl20\AppData\Roaming\Typora\typora-user-images\1667873764203.png)
+
+
+
+## 7.3 constructor属性
+
+- 事实上原型对象上面是有一个属性的：**constructor**
+
+  - 默认情况下原型上都会添加一个属性叫做constructor，这个constructor指向当前的函数对象；
+
+  ```JavaScript
+  function Person() {
+    
+  }
+  
+  Person.prototype.constructor // [Function: Person]
+  p1.__proto__.constructor // [Function: Person]
+  p1.__proto__.constructor.name // Person
+  ```
+
+- ###### 原型对象的constructor
+
+  - 如果希望constructor指向Person，那么可以手动添加：
+
+  - 下面的方式虽然可以, 但是也会造成constructor的[[Enumerable]]特性被设置了true.
+
+    - 默认情况下, 原生的constructor属性是不可枚举的.
+    - 如果希望解决这个问题, 就可以使用我们前面介绍的Object.defineProperty()函数了.
+
+    ```javascript
+    Person.prototype = {
+      constructor: Person,
+      name: 'czl'
+    }
+    
+    Object.defineProperty(Person.prototype, "constructor", {
+      enumerable: false,
+      value: Person
+    })
+    ```
+
+
+
+## 7.4 创建对象 – 构造函数和原型组合
+
+- 让所有的对象去共享这些函数
+
+  ```javascript
+  function Person(name, age) {
+    this.name = name
+    this.age = age
+  }
+  
+  Person.prototype.eating = function() {
+    console.log(this.name,'在吃东西')
+  }
+  
+  var p1 = new Person('czl', 20)
+  p1.eating()
+  ```
+
+
+
+## 7.5 面向对象的特性 – 继承
+
+- 面向对象有三大特性：封装、继承、多态
+  - 封装：我们前面将属性和方法封装到一个类中，可以称之为封装的过程；
+  - 继承：继承是面向对象中非常重要的，不仅仅可以减少重复代码的数量，也是多态前提（纯面向对象中）；
+  - 多态：不同的对象在执行时表现出不同的形态；
+- **那么继承是做什么呢？**
+  - 继承可以帮助我们`将重复的代码和逻辑抽取到父类`中，子类只需要直接继承过来使用即可；
+  - 在很多编程语言中，`继承也是多态的前提`；
+
+
+
+## 7.6 JavaScript原型链
+
+- 从一个对象上获取属性，如果在当前对象中没有获取到就会去它的**原型**上面获取：
+
+- 原型里面还有原型，直到找到该属性为止，如果没有找到，最终会指向Object对象的原型，值为null，
+
+- 这样的原型嵌套称为原型链。
+
   ```javascript
   var obj = {
     name: "why",
     age: 18
   }
   
-  // 1.获取属性描述符
-  console.log(Object.getOwnPropertyDescriptor(obj, "name"))
-  console.log(Object.getOwnPropertyDescriptors(obj))
+  obj.__proto__ = {
+    
+  }
   
-  // 2.阻止对象的扩展
-  Object.preventExtensions(obj)
-  obj.address = "广州市"
-  console.log(obj)
+  obj.__proto__.__proto__ = {
+    
+  }
   
-  // 3.密封对象(不能进行配置)
-  Object.seal(obj)
-  delete obj.name
-  console.log(obj)
+  obj.__proto__.__proto__.__proto__ = {
+    address: '北京市'
+  }
+  ```
+
+- ###### Object的原型
+
+  - 那么什么地方是原型链的尽头呢？比如第三个对象是否也是有原型__proto__属性呢？
+
+    ```JavaScript
+    obj.__proto__.__proto__.__proto__.__proto__ // [Object: null prototype] {}
+    ```
+
+  - **我们会发现它打印的是 [Object: null prototype] {}**
+
+    - 事实上这个原型就是我们最顶层的原型了
+    - 从Object直接创建出来的对象的原型都是 [Object: null prototype] {}。
+
+  - **那么我们可能会问题： [Object: null prototype] {} 原型有什么特殊吗？**
+
+    - 特殊一：`该对象有原型属性`，但是它的原型属性已经指向的是null，也就是已经是顶层原型了；
+    - 特殊二：`该对象上有很多默认的属性和方法`；
+
+- ###### Object是所有类的父类
+
+  - **从我们上面的Object原型我们可以得出一个结论：`原型链最顶层的原型对象就是Object的原型对象`**
+
+    ![1667877293238](C:\Users\czl20\AppData\Roaming\Typora\typora-user-images\1667877293238.png)
+
+
+
+## 7.7 组合式继承
+
+- ###### 通过原型链实现继承
   
-  // 4.冻结对象(不能进行写入)
-  Object.freeze(obj)
-  obj.name = "kobe"
-  console.log(obj)
+  - 目前stu的原型是p对象，而p对象的原型是Person默认的原型，里面包含running等函数；
+    
+  - 注意：步骤4和步骤5不可以调整顺序，否则会有问题
+  
+  ```JavaScript
+  // 1. 定义父类构造函数
+  function Person(name) {
+    this.name =  name
+  }
+  
+  // 2. 父类原型上添加内容
+  Person.prototype.running = function() {
+    
+  }
+  
+  // 3. 定义子类构造函数
+  function Student(sno) {
+    this.sno = sno
+  }
+  
+  // 4. 创建父类对象，并且作为子类的原型对象
+  var p = new Person()
+  Student.prototype = p
+  
+  // 5. 在子类原型上添加内容
+  Student.prototype.studying = function() {
+    
+  }
+  ```
+  
+- ###### 原型链继承的弊端
+
+  - **目前有一个很大的弊端：某些属性其实是保存在p对象上的;**
+    - 第一，我们通过`直接打印对象是看不到这个属性`的；
+    - 第二，这个属性`会被多个对象共享，如果这个对象是一个引用类型，那么就会造成问题`；
+    - 第三，`不能给Person传递参数`（让每个stu有自己的属性），因为这个对象是一次性创建的（没办法定制化）；
+
+- ###### 借用构造函数继承
+
+  - **借用继承的做法非常简单：在子类型构造函数的内部调用父类型构造函数.**
+
+    - 因为函数可以在任意的时刻被调用；
+
+    - 因此通过`apply()和call()方法`也可以在新创建的对象上执行构造函数；
+
+      ```javascript
+      function Student(name, friends, sno) {
+        Person.call(this, name, friends)
+        this.sno = sno
+      }
+      
+      Student.prototype = Person.prototype
+      ```
+
+- ###### 组合借用继承的问题
+  
+  - 组合继承最大的问题就是无论在什么情况下，都会`调用两次父类构造函数`。
+    - 一次在创建子类原型的时候；
+    - 另一次在子类构造函数内部(也就是每次创建子类实例的时候)；
+  - 所有的子类实例事实上会拥有两份父类的属性:
+    - 一份在当前的实例自己里面(也就是person本身的)，另一份在子类对应的原型对象中(也就是person.__proto__里面)；
+    - 当然，这两份属性我们无需担心访问出现问题，因为默认一定是访问实例本身这一部分的；
+
+
+
+## 7.8 寄生组合式继承
+
+- ###### 原型式继承函数
+
+  - **最终的目的：student对象的原型指向了person对象；**
+
+    ```javascript
+    function object(obj) {
+      function Func() {}
+      Func.prototype = obj
+      return new Func()
+    }
+    
+    function object(obj) {
+      var newObj = {}
+      Object.setPrototypeof(newObj, obj)
+      return newObj
+    }
+    
+    var student = Object.create(person, {
+      address: {
+        value: "北京市",
+        enumerable: true
+      }
+    })
+    ```
+
+- ###### 寄生式继承函数
+
+  - 寄生式(Parasitic)继承是`与原型式继承紧密相关的一种思想`, 并且同样`由道格拉斯·克罗克福德(Douglas Crockford)提出和推广`的；
+
+  - 寄生式继承的思路是`结合原型类继承和工厂模式`的一种方式；
+
+  - 即`创建一个封装继承过程的函数, 该函数在内部以某种方式来增强对象，最后再将这个对象返回`；
+
+    ```JavaScript
+    function object(obj) {
+      function Func() {}
+      Func.prototype = obj
+      return new Func()
+    }
+    
+    function createStudent(person, name) {
+      var newObj = object(person)
+      newObj.name = name
+      newObj.studying = function() {
+        consol.log(this.name,'study')
+      }
+      return newObj
+    }
+    ```
+
+- ###### 寄生组合式继承
+
+  ```javascript
+  // 定义object函数
+  function object(o) {
+    function F(){}
+    F.prototype = o
+    return new F()
+  }
+  
+  // 定义寄生式核心函数
+  function inheritPrototype(Subtype, Supertype) {
+    // Subtype.prototype.__proto__ = Supertype.prototype
+    // Object.setPrototypeOf(Subtype.prototype, Subtype.prototype)
+    Subtype.prototype = createObject(Supertype.prototype)
+    Object.defineProperty(Subtype.prototype, "constructor", {
+      enumerable: false,
+      configurable: true,
+      writable: true,
+      value: Subtype
+    })
+    Object.setPrototypeOf(Subtype, Supertype)
+    // Subtype.__proto__ = Supertype
+  }
+  
+  inheritPrototype(Student, Person)
+  ```
+
+
+
+# 八、JavaScript ES6实现继承
+
+## 8.1 认识class定义类
+
+- 我们会发现，按照前面的构造函数形式创建 **类**，不仅仅和编写普通的函数过于相似，而且代码并不容易理解。
+
+  - 在ES6（ECMAScript2015）新的标准中使用了class关键字来直接定义类；
+  - 但是类本质上依然是前面所讲的构造函数、原型链的语法糖而已；
+  - 所以学好了前面的构造函数、原型链更有利于我们理解类的概念和继承关系；
+
+- 那么，如何使用class来定义一个类呢？
+
+  - 可以使用两种方式来声明类：类声明和类表达式；
+
+    ```javascript
+    class Person {
+    
+    }
+    
+    var Student = class {}
+    ```
+
+
+
+## 8.2 类和构造函数的异同
+
+- 我们来研究一下类的一些特性：
+
+  - 你会发现它和我们的构造函数的特性其实是一致的；
+
+  ```javascript
+  var p = new Person()
+  
+  console.log(Person) // [class Person]
+  console.log(Person.prototype) // {}
+  console.log(Person.prototype.constructor) // [class Person]
+  
+  console.log(p.__proto__ === Person.prototype) // true
+  
+  console.log(typeof Person) // function
+  ```
+
+
+
+## 8.3 类的构造函数
+
+- 如果我们希望在创建对象的时候给类传递一些参数，这个时候应该如何做呢？
+  - 每个类都可以有一个自己的构造函数（方法），这个方法的名称是固定的constructor；
+  - 当我们通过new操作符，操作一个类的时候会调用这个类的构造函数constructor；
+  - 每个类只能有一个构造函数，如果包含多个构造函数，那么会抛出异常；
+- 当我们通过new关键字操作类的时候，会调用这个constructor函数，并且执行如下操作：
+  - 1.在内存中创建一个新的对象（空对象）；
+  - 2.这个对象内部的[[prototype]]属性会被赋值为该类的prototype属性；
+  - 3.构造函数内部的this，会指向创建出来的新对象；
+  - 4.执行构造函数的内部代码（函数体代码）；
+  - 5.如果构造函数没有返回非空对象，则返回创建出来的新对象；
+
+
+
+## 8.4 类的实例方法
+
+- 在上面我们定义的属性都是直接放到了this上，也就意味着它是放到了创建出来的新对象中：
+
+  - 在前面我们说过对于实例的方法，我们是希望放到原型上的，这样可以被多个实例来共享；
+
+  - 这个时候我们可以直接在类中定义；
+
+    ```javascript
+    class Person {
+      constructor(name, age) {
+        this.name = name
+        this.age = age
+      }
+      
+      running() {
+        console.log(`${this.name}running`)
+      }
+    }
+    ```
+
+
+
+## 8.5 类的访问器方法
+
+- 我们之前讲对象的属性描述符时有讲过对象可以添加setter和getter函数的，那么类也是可以的：
+
+  ```javascript
+  class Person {
+    constructor(name) {
+      this._name = name
+    }
+    
+  	set name(newName) {
+      this._name = newName
+    }
+      
+  	get name() {
+      return this._name 
+    }
+  }
+  ```
+
+
+
+## 8.6 类的静态方法
+
+- 静态方法通常用于定义直接使用类来执行的方法，不需要有类的实例，使用static关键字来定义:
+
+  ```javascript
+  class Person {
+    constructor(age) {
+      this.age = age
+    }
+    
+    static create() {
+      return new Person(Math.floor(Math.random() * 100))
+    }
+  }
+  ```
+
+
+
+## 8.7 ES6类的继承 - extends
+
+- 在ES6中新增了使用extends关键字，可以方便的帮助我们实现继承：
+
+  ```javascript
+  class Person {
+  
+  }
+  
+  class Student extends Person {
+  
+  }
+  ```
+
+
+
+## 8.8 super关键字
+
+- 我们会发现在上面的代码中我使用了一个super关键字，这个super关键字有不同的使用方式：
+
+  - 注意：在子（派生）类的构造函数中使用this或者返回默认对象之前，必须先通过super调用父类的构造函数！
+
+  - super的使用位置有三个：子类的构造函数、实例方法、静态方法；
+
+    ```javascript
+    // 调用 父对象/父类 的构造函数
+    super([arguments]);
+    
+    // 调用 父对象/父类 上的方法
+    super.functionOnParent([arguments]);
+    ```
+
+
+
+## 8.9 继承内置类
+
+- 我们也可以让我们的类继承自内置类，比如Array:
+
+  ```javascript
+  class HYArray extends Array {
+    lastItem() {
+      return this[this.length - 1]
+    }
+  }
+  
+  var array = new HYArray(10, 20 ,30)
+  array.lastItem()
+  ```
+
+
+
+## 8.10 类的混入mixin
+
+- JavaScript的类只支持单继承：也就是只能有一个父类
+
+  - 那么在开发中我们我们需要在一个类中添加更多相似的功能时，应该如何来做呢？
+  - 这个时候我们可以使用混入（mixin）；
+
+  ```JavaScript
+  function mixinRunner(BaseClass) {
+    return class extends BaseClass {
+      running(){
+        console.log("running")
+      }
+    }
+  }
+  
+  function mixinEater(BaseClass) {
+    return class extends BaseClass {
+      eating(){
+        console.log("eating")
+      }
+    }
+  }
+  
+  class Person {
+    
+  }
+  
+  class newPerson extends mixinEater(mininRunner(Person)) {
+    
+  }
+  
+  var np = newPerson()
+  np.eating()
+  np.running()
+  ```
+
+
+
+# 九、ES6 ~ ES13新特性
+
+## 9.1 新的ECMA代码执行描述
+
+- **在新的ECMA代码执行描述中（ES5以及之上），对于代码的执行流程描述改成了另外的一些词汇：**
+  
+  - 基本思路是相同的，只是`对于一些词汇的描述发生了改变`；
+  - `执行上下文栈和执行上下文`也是相同的；
+  
+- ###### 词法环境（Lexical Environments）
+
+  - **词法环境是一种规范类型，用于在词法嵌套结构中定义关联的变量、函数等标识符；**
+    - 一个词法环境是由环境记录（Environment Record）和一个外部词法环境（oute;r Lexical Environment）组成；
+    - 一个词法环境经常用于关联一个函数声明、代码块语句、try-catch语句，当它们的代码被执行时，词法环境被创建出来；
+  - **也就是在ES5之后，执行一个代码，通常会关联对应的词法环境；**
+    - 那么执行上下文会关联哪些词法环境呢？
+      - LexicalEnvironment用于处理let、const声明的标识符：
+      - VariableEnvironment用于处理var和function声明的标识符：
+
+- ###### 环境记录（Environment Record）
+
+  - **在这个规范中有两种主要的环境记录值:声明式环境记录和对象环境记录。**
+    - 声明式环境记录：声明性环境记录用于定义ECMAScript语言语法元素的效果，如函数声明、变量声明和直接将标识符绑定与
+      ECMAScript语言值关联起来的Catch子句。
+    - 对象式环境记录：对象环境记录用于定义ECMAScript元素的效果，例如WithStatement，它将标识符绑定与某些对象的属性关联起来。
+
+- ###### 新ECMA描述内存图
+
+  ![1667894268160](C:\Users\czl20\AppData\Roaming\Typora\typora-user-images\1667894268160.png)
+
+
+
+## 9.2 let/const/var关键字
+
+- ###### let/const基本使用
+
+  - **在ES5中我们声明变量都是使用的var关键字，从ES6开始新增了两个关键字可以声明变量：let、const**
+    - `let、const在其他编程语言中都是有的`，所以也并不是新鲜的关键字；
+    - 但是`let、const确确实实给JavaScript带来一些不一样的东西`；
+  - **let关键字：**
+    - 从直观的角度来说，`let和var是没有太大的区别`的，都是`用于声明一个变量`；
+  - **const关键字：**
+    - const关键字是`constant的单词的缩写，表示常量、衡量`的意思；
+    - 它表示`保存的数据一旦被赋值，就不能被修改`；
+    - 但是`如果赋值的是引用类型，那么可以通过引用找到对应的对象，修改对象`的内容；
+  - **注意：**另外let、const不允许重复声明变量；
+
+- ###### let/const作用域提升
+
+  - **let、const和var的另一个重要区别是作用域提升：**
+    - 我们知道`var声明的变量是会进行作用域提升`的；
+    - 但是如果我们使用let声明的变量，在声明之前访问会报错；
+  - **那么是不是意味着foo变量只有在代码执行阶段才会创建的呢？**
+    - 事实上并不是这样的，我们可以看一下ECMA262对let和const的描述；
+    - 这些变量会被创建在包含他们的词法环境被实例化时，但是是不可以访问它们的，直到词法绑定被求值；
+
+- ###### 暂时性死区 (TDZ)
+
+  - **我们知道，在let、const定义的标识符真正执行到声明的代码之前，是不能被访问的**
+
+    - `从块作用域的顶部一直到变量声明完成之前`，这个变量处在`暂时性死区（TDZ，temporal dead zone）`
+
+      ```javascript
+      {
+        console.log(name)
+        
+        let name = "why" // Uncaught ReferenceError: Cannot access 'name' before initialization
+      }
+      ```
+
+  - 使用术语 “temporal” 是因为区域取决于执行顺序（时间），而不是编写代码的位置；
+
+    ```javascript
+    function foo() {
+      console.log(message)
+    }
+    
+    let message = "Hello World"
+    foo()
+    ```
+
+- ###### let/const有没有作用域提升呢？
+
+  - **从上面我们可以看出，在`执行上下文的词法环境创建出来的时候，变量事实上已经被创建`了，只是`这个变量是不能被访问`的。**
+    - 那么变量已经有了，但是不能被访问，是不是一种作用域的提升呢？
+  - **事实上维基百科并没有对作用域提升有严格的概念解释，那么我们自己从字面量上理解；**
+    - 作用域提升：在`声明变量的作用域`中，如果`这个变量可以在声明之前被访问，那么我们可以称之为作用域提升`；
+    - 在这里，它虽然被创建出来了，但是不能被访问，我认为不能称之为作用域提升；
+  - 所以我的观点是`let、const没有进行作用域提升，但是会在解析阶段被创建出来`。
+
+- ###### var的块级作用域
+
+  - **JavaScript只会形成两个作用域：`全局作用域和函数作用域`。**
+
+  - **ES5中放到一个代码中定义的变量，外面是可以访问的：**
+
+    ```javascript
+    // var 没有块级作用域
+    {
+      // 编写语句
+      var foo = "foo"
+    }
+    
+    console.log(foo) // foo 可以访问到
+    ```
+
+- ###### let/const的块级作用域
+
+  - **在ES6中新增了块级作用域，并且通过`let、const、function、class声明`的标识符是具备块级作用域的限制的：**
+
+    ```javascript
+    {
+      let foo = "foo"
+      function bar() {
+        console.log("bar")
+      }
+      class Person {}
+    }
+    
+    console.log(foo) // ReferenceError: foo is not defined
+    bar() // 可以访问
+    var p = new Person() // ReferenceError: foo is not defined
+    ```
+
+  - **但是我们会发现`函数拥有块级作用域`，但是`外面依然是可以访问`的：**
+
+    - 这是因为`引擎会对函数的声明进行特殊的处理`，允许像var那样进行提升；	
+
+- ###### 块级作用域的应用
+
+  - **我来看一个实际的案例：获取多个按钮监听点击**
+
+  - **使用let或者const来实现：**
+
+    ```html
+    <body>
+      <button>按钮一</button>
+      <button>按钮二</button>
+      <button>按钮三</button>
+      <button>按钮四</button>
+      
+      <script>
+      	var btns = document.getElementsByTagName("button")
+        for(let i = 0; i < btns.length; i++) {
+          btns[i].onclick = function() {
+            console.log(`第${i}个按钮被点击`)
+          }
+        }
+      </script>
+    </body>
+    ```
+
+- ###### var、let、const的选择
+
+  - **对于var的使用：**
+    - 我们需要明白一个事实，var所表现出来的特殊性：比如`作用域提升、window全局对象、没有块级作用域`等都是`一些历史遗
+      留问题`；
+    - 其实是`JavaScript在设计之初的一种语言缺陷`；
+    - 当然目前市场上也在`利用这种缺陷出一系列的面试题，来考察大家对JavaScript语言本身以及底层的理解`；
+    - 但是在实际工作中，我们`可以使用最新的规范来编写，也就是不再使用var来定义变量`了；
+  - **对于let、const：**
+    - 对于let和const来说，是目前开发中推荐使用的；
+    - 我们会`优先推荐使用const`，这样可以`保证数据的安全性不会被随意的篡改`；
+    - 只有当`我们明确知道一个变量后续会需要被重新赋值`时，这个时候`再使用let`；
+    - 这种在很多`其他语言里面也都是一种约定俗成的规范`，尽量我们也遵守这种规范；
+
+
+
+## 9.3 字符串模板
+
+- ###### 字符串模板基本使用
+
+  - **ES6允许我们使用字符串模板来嵌入JS的变量或者表达式来进行拼接：**
+
+    - 首先，我们会使用 `` 符号来编写字符串，称之为模板字符串；
+    - 其次，在模板字符串中，我们可以`通过 ${expression} `来嵌入动态的内容；
+
+    ```javascript
+    const name = "why"
+    const age = 18
+    
+    console.log(`my name is ${name}, age is ${age}`)
+    
+    function foo() {
+      return 'function is foo'
+    }
+    
+    console.log(`my function is ${foo()}`)
+    ```
+
+- ###### 标签模板字符串使用
+
+  - **模板字符串还有另外一种用法：标签模板字符串（Tagged Template Literals）。**
+
+  - **如果我们使用标签模板字符串，并且在调用的时候插入其他的变量：**
+
+    - `模板字符串被拆分`了；
+
+    - 第一个元素是`数组`，是`被模块字符串拆分的字符串组合`;
+
+    - `后面的元素是一个个模块字符串传入的内容`；
+
+      ```JavaScript
+      const name = "why"
+      const age = 18
+      // [ ["Hello", "World", ''], 'why', 18]
+      foo`Hello ${name} World ${age}`
+      ```
+
+
+
+## 9.4 函数的默认参数
+
+- **在ES6之前，我们编写的函数参数是没有默认值的，所以我们在编写函数时，如果有下面的需求：**
+
+  - 传入了参数，那么使用传入的参数；
+  - 没有传入参数，那么使用一个默认值；
+
+- **而在ES6中，我们允许给函数一个默认值：**
+
+  ```javascript
+  function foo(x = 20, y = 30) {
+  
+  }
+  ```
+
+- **默认值也可以和解构一起来使用：**
+
+  ```javascript
+  // 写法一
+  function foo({name, age} = {name: "why", age: 18}) {
+  	console.log(name, age)
+  }
+  
+  // 写法二
+  function foo({name = "why", age = 18} = {}) {
+  	console.log(name, age)
+  }
+  ```
+
+- **另外参数的默认值我们通常会将其放到最后（在很多语言中，如果不放到最后其实会报错的）：**
+
+  - 但是JavaScript`允许不将其放到最后，但是意味着还是会按照顺序来匹配`；
+
+- **另外默认值会改变函数的length的个数，默认值以及后面的参数都不计算在length之内了。**
+
+
+
+## 9.5 函数的剩余参数
+
+- **ES6中引用了rest parameter，可以将不定数量的参数放入到一个数组中：**
+
+  - 如果最后一个参数是 ... 为前缀的，那么它会将剩余的参数放到该参数中，并且作为一个数组；
+
+    ```javascript
+    function foo(m,n,...args){
+      console.log(args)
+    }
+    ```
+
+- **那么剩余参数和arguments有什么区别呢？**
+
+  - 剩余参数只包含那些没有`对应形参的实参`，而 `arguments 对象包含了传给函数的所有实参`；
+  - `arguments对象不是一个真正的数组`，而`rest参数是一个真正的数组`，可以进行数组的所有操作；
+  - arguments是`早期的ECMAScript中`为了方便去获取所有的参数提供的一个数据结构，而rest参数是`ES6中提供`并且希望以此
+    来替代arguments的;
+
+- **剩余参数必须放到最后一个位置，否则会报错**。
+
+
+
+## 9.6 箭头函数
+
+- ###### 箭头函数是ES6之后增加的一种编写函数的方法，并且它比函数表达式要更加简洁：
+
+  - 箭头函数`不会绑定this、arguments属性`；
+  - 箭头函数`不能作为构造函数来使用`（不能和new一起来使用，会抛出错误）；
+
+- ###### 箭头函数如何编写呢？
+
+  - (): 函数的参数
+
+  - {}: 函数的执行体
+
+    ```javascript
+    nums.forEach((item, index, arr) => {
+      
+    })
+    ```
+
+- ###### 箭头函数的编写优化
+
+  - **优化一: 如果只有一个参数()可以省略**
+
+    ```JavaScript
+    nums.forEach(item => {})
+    ```
+
+  - **优化二: 如果函数执行体中只有一行代码, 那么可以省略大括号**
+
+    - 并且这行代码的返回值会作为整个函数的返回值
+
+      ```java
+      nums.forEach(item => item)
+      ```
+
+  - **优化三: 如果函数执行体只有返回一个对象, 那么需要给这个对象加上()**
+
+    ```javascript
+    var foo = () => {
+      return { name: "abc"}
+    }
+    var bar = () => ({name: "abc"})
+    ```
+
+- ###### ES6箭头函数this
+
+  - **从ES6开始，我们会使用箭头函数;**
+
+    - 为什么在setTimeout的回调函数中可以直接使用this呢？
+    - 因为箭头函数并不绑定this对象，那么this引用就会从上层作用于中找到对应的this
+
+    ```javascript
+    var obj = {
+      data: [],
+      getData: function() {
+        console.log(obj)
+        setTimeout(() => {
+          // 模拟获取到的数据
+          var res = ["abc", "cba", "nba"];
+          this.data.push(...res)
+        }, 1000)
+      }
+    }
+    ```
+
+- ###### 函数箭头函数的补充
+
+  - 箭头函数是`没有显式原型prototype`的，所以不能作为构造函数，使用new来创建对象；
+  - 箭头函数也`不绑定this、arguments、super参数`；
+
+
+
+## 9.7 展开语法
+
+- **展开语法(Spread syntax)：**
+  - 可以在函数调用/数组构造时，将数组表达式或者string在语法层面展开；
+  - 还可以在构造字面量对象时, 将对象表达式按key-value的方式展开；
+- **展开语法的场景：**
+  - 在`函数调用`时使用；
+  - 在`数组构造`时使用；
+  - 在`构建对象字面量`时，也可以使用展开运算符，这个是在ES2018（ES9）中添加的新特性；
+- **注意：**展开运算符其实是一种浅拷贝；
+
+
+
+## 9.8 数值的表示
+
+- 在ES6中规范了二进制和八进制的写法：
+
+- 另外在ES2021新增特性：数字过长时，可以使用_作为连接符
+
+  ```javascript
+  // 1.十进制
+  const num1 = 100
+  // 2.十六进制 hexadecimal
+  var num2 = 0x100
+  // 3.八进制 octonary
+  var num3 = 0o100
+  // 4.二进制 binary
+  var num4 = 0b100
   ```
 
   
 
+## 9.9 Symbol
 
+- ###### Symbol的基本使用
+
+  - Symbol是什么呢？Symbol是ES6中新增的一个基本数据类型，翻译为符号。
+  - **那么为什么需要Symbol呢？**
+    - 在ES6之前，对象的属性名都是字符串形式，那么很容易造成属性名的冲突；
+    - 比如原来有一个对象，我们希望在其中`添加一个新的属性和值`，但是我们在不确定它原来内部有什么内容的情况下，`很容易
+      造成冲突，从而覆盖掉它内部的某个属性`；
+    - 比如我们前面在讲apply、call、bind实现时，我们有给其中`添加一个fn属性`，那么如果它内部原来已经有了fn属性了呢？
+    - 比如开发中我们使用混入，那么混入中出现了同名的属性，必然有一个会被覆盖掉；
+  - Symbol就是为了解决上面的问题，用来**生成一个独一无二的值**。
+    - Symbol值是通过`Symbol函数`来生成的，生成后可以`作为属性名`；
+    - 也就是在ES6中，对象的属性名可以使用`字符串`，也可以使用`Symbol值`；
+  - **Symbol即使多次创建值，它们也是不同的：**Symbol函数执行后每次创建出来的值都是独一无二的；
+  - **我们也可以在创建Symbol值的时候传入一个描述description**：这个是ES2019（ES10）新增的特性；
+  
+- ###### Symbol作为属性名
+
+  - 我们通常会使用Symbol在对象中表示唯一的属性名：
+
+    ```JavaScript
+    const s1 = Symbol("abc")
+    const s2 = Symbol("cba")
+    
+    const obj = {}
+    
+    // 1.写法一：属性名赋值
+    obj[s1] = "abc"
+    obj[s2] = "cba"
+    
+    // 2.写法二：Object.defineProperty
+    Object.defineProperty(obj, s1, {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 'abc'
+    })
+    
+    // 3.写法三：定义字面量是直接使用
+    const info = {
+      [s1]: "abc",
+      [s2]: "cba"
+    }
+    
+    const symbolKeys = Object.getOwnPropertySymbols(info)
+    for (const key of symbolKeys) {
+      console.log(info[key])
+    }
+    ```
+
+- ###### 相同值的Symbol
+
+  - **前面我们讲Symbol的目的是为了创建一个独一无二的值，那么如果我们现在就是想创建相同的Symbol应该怎么来做呢？**
+
+    - 我们可以使用`Symbol.for方法`来做到这一点；
+    - 并且我们可以通过`Symbol.keyFor方法`来获取对应的key；
+
+    ```javascript
+    const s1 = Symbol.for("abc")
+    const s2 = Symbol.for("abc")
+    
+    console.log(s1 === s2) // true
+    const key = Symbol.KeyFor(s1)
+    console.log(key) // abc
+    const s3 = Symbol.for(key)
+    console.log(s3 === s2) // true
+    ```
+
+
+
+
+## 9.10 Set
+
+- ###### Set的基本使用
+
+  - **在ES6之前，我们存储数据的结构主要有两种：`数组、对象`。**
+
+    - **在ES6中新增了另外两种数据结构：`Set、Map`，以及它们的另外形式WeakSet、WeakMap。**
+
+  - **Set是一个新增的数据结构，可以用来保存数据，类似于数组，但是和数组的区别是`元素不能重复`。**
+
+    - 创建Set我们需要通过`Set构造函数`（暂时没有字面量创建的方式）：
+
+  - 我们可以发现Set中存放的元素`是不会重复`的，那么Set有一个非常常用的功能就是`给数组去重`。
+
+    ```javascript
+    const set1 = new Set()
+    set1.add(10)
+    
+    const set2 = new Set([11,22,22,34,32])
+    console.log(set2) // {11, 22, 34 , 32}
+    
+    const arr = [10,20,10,44,78,44]
+    const set3 = new Set(arr)
+    const newArray1 = [...set3]
+    const newArray2 = Array.from(set3)
+    ```
+
+- ###### Set的常见方法
+
+  - **Set常见的属性：**
+    - `size`：返回Set中元素的个数；
+  - **Set常用的方法：**
+    - `add(value)`：添加某个元素，返回Set对象本身；
+    - `delete(value)`：从set中删除和这个值相等的元素，返回boolean类型；
+    - `has(value)`：判断set中是否存在某个元素，返回boolean类型；
+    - `clear()`：清空set中所有的元素，没有返回值；
+    - `forEach(callback, [, thisArg])`：通过forEach遍历set；
+  - **另外Set是支持for of的遍历的。**
+
+
+
+## 9.11 WeakSet
+
+- ###### WeakSet使用
+
+  - **和Set类似的另外一个数据结构称之为WeakSet，也是内部元素不能重复的数据结构。**
+
+  - **那么和Set有什么区别呢？**
+
+    - 区别一：WeakSet中`只能存放对象类型，不能存放基本数据类型`；
+
+    - 区别二：WeakSet`对元素的引用是弱引用`，如果没有其他引用对某个对象进行引用，那么GC可以对该对象进行回收；
+
+      ```javascript
+      const wset = new WeakSet()
+      
+      // TypeError：Invalid value used in weak set
+      wset.add(10)
+      ```
+
+  - **WeakSet常见的方法：**
+
+    - add(value)：添加某个元素，返回WeakSet对象本身；
+    - delete(value)：从WeakSet中删除和这个值相等的元素，返回boolean类型；
+    - has(value)：判断WeakSet中是否存在某个元素，返回boolean类型；
+
+- ###### WeakSet的应用
+
+  - **注意：WeakSet不能遍历**
+
+    - 因为WeakSet只是对对象的弱引用，如果我们遍历获取到其中的元素，那么有可能造成对象不能正常的销毁。
+
+    - 所以存储到WeakSet中的对象是没办法获取的；
+
+      ```javascript
+      const pwset = new WeakSet()
+      class Person {
+        constructor() {
+          pwset.add(this)
+        }
+        running() {
+          if(!pwset.has(this)) throw new Error("不能通过其他对象调用running方法")
+          console.log("running",this)
+        }
+      }
+      ```
+
+
+
+## 9.12 Map
+
+- ###### Map的基本使用
+
+  - **另外一个新增的数据结构是Map，用于存储映射关系。**
+
+  - **但是我们可能会想，在之前我们可以`使用对象来存储映射关系，他们有什么区别`呢？**
+
+    - 事实上我们对象存储映射关系只能用`字符串（ES6新增了Symbol）作为属性名（key）`；
+    - 某些情况下我们可能希望通过`其他类型作为key`，`比如对象`，这个时候`会自动将对象转成字符串来作为key`；
+
+  - **那么我们就可以使用Map：**
+
+    ```javascript
+    const obj1 = { name: "why" }
+    const obj1 = { age: 18 }
+    
+    const map = new Map()
+    // 方式一
+    map.set(obj1, "abc")
+    map.set(obj2, "cba")
+    
+    // 方式二
+    const map2 = new Map([
+      [obj1, "abc"],
+      [obj2, "cba"],
+      [obj1, "nba"]
+    ])
+    
+    console.log(map.get(obj1)) // nba
+    console.log(map.get(obj2)) // cba
+    ```
+
+- ###### Map的常用方法
+
+  - **Map常见的属性：**
+    - `size`：返回Map中元素的个数；
+  - **Map常见的方法：**
+    - `set(key, value)`：在Map中添加key、value，并且返回整个Map对象；
+    - `get(key)`：根据key获取Map中的value；
+    - `has(key)`：判断是否包括某一个key，返回Boolean类型；
+    - `delete(key)`：根据key删除一个键值对，返回Boolean类型；
+    - `clear()`：清空所有的元素；
+    - `forEach(callback, [, thisArg])`：通过forEach遍历Map；
+  - **Map也可以通过for of进行遍历。**
+
+
+
+## 9.13 WeakMap
+
+- ###### WeakMap的使用
+
+  - **和Map类型的另外一个数据结构称之为`WeakMap`，也是`以键值对的形式`存在的。**
+
+  - 那么和Map有什么区别呢？
+
+    - 区别一：`WeakMap的key只能使用对象，不接受其他的类型作为key`；
+
+    - 区别二：WeakMap的`key对对象想的引用是弱引用`，如果没有其他引用引用这个对象，那么GC可以回收该对象；
+
+      ```javascript
+      const weakMap = new WeakMap()
+      
+      // Invalid value used as weak map key
+      weakMap.set(1, "abc")
+      // Invalid value used as weak map key
+      weakMap.set("aaa", "abc")
+      ```
+
+  - **WeakMap常见的方法有四个：**
+
+    - `set(key, value)`：在Map中添加key、value，并且返回整个Map对象；
+    - `get(key)`：根据key获取Map中的value；
+    - `has(key)`：判断是否包括某一个key，返回Boolean类型；
+    - `delete(key)`：根据key删除一个键值对，返回Boolean类型；
+
+- ###### WeakMap的应用
+
+  - **注意：WeakMap也是不能遍历的**
+
+    - 没有forEach方法，也不支持通过for of的方式进行遍历；
+
+  - **WeakMap有什么作用呢？**
+
+    ```javascript
+    // WeakMap({key(对象): value}): key是一个对象，弱引用
+    const targetMap = new WeakMap()
+    function getDep(target, key) {
+      // 1.根据对象(target)取出对应的Map对象
+      let depsMap = targetMap.get(target)
+      if(!depsMap) {
+        depsMap = new Map()
+        targetMap.set(target, depsMap)
+      }
+      
+      // 2.取出具体的dep对象
+      let dep = depsMap.get(key)
+      if(!dep) {
+        dep = new Dep()
+        depsMap.set(key, dep)
+      }
+      return dep
+    }
+    ```
+
+
+
+## 9.14 ES7 - Array Includes
 
 
 

@@ -10,19 +10,17 @@
 
 <body>
     <script>
-        function foo() {
-            console.log(this) // obj对象
+        {
+        let foo = "foo"
+        function bar() {
+            console.log("bar")
         }
-        var obj1 = {
-            name: "obj1",
-            foo: foo
-        }
-        var obj2 = {
-            name: "obj2",
-            obj1: obj1
+        class Person {}
         }
 
-        obj2.obj1.foo()
+        // console.log(foo) // ReferenceError: foo is not defined
+        bar() // 可以访问
+        // var p = new Person() // ReferenceError: foo is not defined
     </script>
 </body>
 
