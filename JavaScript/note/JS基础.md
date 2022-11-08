@@ -641,7 +641,7 @@
 
   -  `push/pop` 方法运行的比较快，而 shift/unshift 比较慢。
 
-- ###### `arr.splice`方法:
+- ###### `arr.splice`方法
 
   - 它可以做所有事情：添加，删除和替换元素。
 
@@ -662,7 +662,7 @@
 
   - 注意：这个方法会修改原数组
 
-- ###### `length`属性：
+- ###### `length`属性
 
   - 用于获取数组的长度
   - 当我们修改数组的时候，length 属性会自动更新。
@@ -750,7 +750,7 @@
 
 - ###### `reverse()` 方法将数组中元素的位置颠倒，并返回该数组。
 
-- ###### **`arr.forEach`:** 
+- ###### `arr.forEach`
 
   - 遍历数组，并且让数组中每一个元素都执行一次对应的方法；
 
@@ -758,7 +758,7 @@
   arr.forEach((item,index,arr)=>{})
   ```
 
-- ###### `arr.map`:
+- ###### `arr.map`
 
   - map() 方法创建一个新数组；
   - 这个新数组由原数组中的每个元素都调用一次提供的函数后的返回值组成；
@@ -769,7 +769,7 @@
   })
   ```
 
-- ###### `arr.filter`:
+- ###### `arr.filter`
 
   - filter() 方法创建一个新数组；
   - 新数组中只包含每个元素调用函数返回为true的元素；
@@ -780,7 +780,7 @@
   })
   ```
 
-- ###### `arr.reduce`:
+- ###### `arr.reduce`
 
   - 用于计算数组中所有元素的总和；
   - 对数组中的每个元素按序执行一个由您提供的 reducer 函数；
@@ -1144,7 +1144,7 @@
 
 ## 6.9 元素的特性attribute
 
-- ###### 属性attribute的分类：
+- ###### 属性attribute的分类
 
   - 标准的attribute：某些attribute属性是标准的，比如id、class、href、type、value等；
 
@@ -1156,7 +1156,7 @@
     </div>
     ```
 
-- ###### attribute的操作:
+- ###### attribute的操作
 
   - `elem.hasAttribute(name)` — 检查特性是否存在。
 
@@ -1178,7 +1178,7 @@
     boxEl.removeAttribute("abc")
     ```
 
-- ###### attribute具备以下特征：
+- ###### attribute具备以下特征
 
   - 它们的名字是大小写不敏感的（id 与 ID 相同）。
   - 它们的值总是字符串类型的。
@@ -1475,7 +1475,7 @@
     })
     ```
 
-- ###### event常见的属性：
+- ###### event常见的属性
 
   - `type`：事件的类型；
   - `target`：当前事件发生的元素；
@@ -1486,7 +1486,7 @@
   - `pageX、pageY`：事件发生在客户端相对于document的位置；
   - `screenX、screenY`：事件发生相对于屏幕的位置；
 
-- ###### event常见的方法：
+- ###### event常见的方法
 
   - `preventDefault`：取消事件的默认行为；
   - `stopPropagation`：阻止事件的进一步传递（冒泡或者捕获都可以阻止）；
@@ -1513,7 +1513,7 @@
 
   - EventTarget是一个`DOM接口`，主要用于`添加、删除、派发Event事件`；
 
-- ###### EventTarget常见的方法：
+- ###### EventTarget常见的方法
 
   - `addEventListener`：注册某个事件类型以及事件处理函数；
 
@@ -1719,7 +1719,7 @@
   - `delay`：执行前的延时，以毫秒为单位（1000 毫秒 = 1 秒），默认值是 0；
   - `arg1，arg2…`：要传入被执行函数（或代码字符串）的参数列表；
 
-- ###### clearTimeout方法：
+- ###### clearTimeout方法
 
   - `setTimeout `在调用时会返回一个`“定时器标识符（timer identifier）”`，我们可以使用它来取消执行。
 
@@ -1736,7 +1736,7 @@
   - `delay`：执行前的延时，以毫秒为单位（1000 毫秒 = 1 秒），默认值是 0；
   - `arg1，arg2…`：要传入被执行函数（或代码字符串）的参数列表；
 
-- ###### `clearInterval`方法：
+- ###### `clearInterval`方法
 
   - `setInterval`也会返回一个`“定时器标识符（timer identifier）”`，我们可以通过clearInterval来取消这个定时器。
 
@@ -1785,7 +1785,7 @@
   - 使用`var定义的变量会被添加到window对象`中；
 - window默认给我们提供了全局的函数和类：`setTimeout、Math、Date、Object`等；
   
-- ###### window常见的属性:
+- ###### window常见的属性
 
   ```javascript
   // 浏览器高度
@@ -1802,7 +1802,7 @@
   })
   ```
 
-- ###### window常见的方法:
+- ###### window常见的方法
 
   ```javascript
   // close方法
@@ -1856,7 +1856,7 @@
 
 - location对象用于表示window上当前链接到的URL信息。
 
-- ###### location对象常见的属性：
+- ###### location对象常见的属性
 
   - `href`: 当前window对应的超链接URL, 整个URL；
   - `protocol`: 当前的协议；
@@ -1869,7 +1869,7 @@
   - username：URL中的username（很多浏览器已经禁用）；
   - password：URL中的password（很多浏览器已经禁用）；
 
-- ###### location对象常见的方法：
+- ###### location对象常见的方法
 
   - assign：赋值一个新的URL，并且跳转到该URL中；
 
@@ -1902,7 +1902,7 @@
     console.log(urlsearch.toSrting()) // name=why&age=18&height=1.88
     ```
 
-- ###### URLSearchParams常见的方法如下：
+- ###### URLSearchParams常见的方法如下
 
   - `get`：获取搜索参数的值；
   - `set`：设置一个搜索参数和值；
@@ -2153,18 +2153,18 @@
     sessionStorage.setItem("name", "sessionStorage")
     ```
 
-- ###### localStorage和sessionStorage的区别:
+- ###### localStorage和sessionStorage的区别
 
   - **验证一**：关闭网页后重新打开，localStorage会保留，而sessionStorage会被删除；
   - **验证二**：在页面内实现跳转，localStorage会保留，sessionStorage也会保留；
   - **验证三**：在页面外实现跳转（打开新的网页），localStorage会保留，sessionStorage不会被保留；
 
-- ###### Storage常见的属性:
+- ###### Storage常见的属性
 
   - `Storage.length`：只读属性
     - 返回一个整数，表示存储在Storage对象中的数据项数量；
 
-- ###### Storage常见的方法:
+- ###### Storage常见的方法
 
   - `Storage.key()`：该方法接受一个数值n作为参数，返回存储中的第n个key名称；
 
