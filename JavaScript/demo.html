@@ -10,17 +10,18 @@
 
 <body>
     <script>
-        {
-        let foo = "foo"
-        function bar() {
-            console.log("bar")
-        }
-        class Person {}
+        var obj = {
+            name: "czl",
+            age: 18,
+            hasOwnProperty: function() {
+                return false
+            }
         }
 
-        // console.log(foo) // ReferenceError: foo is not defined
-        bar() // 可以访问
-        // var p = new Person() // ReferenceError: foo is not defined
+        var info = Object.create(obj)
+        info.name = 'why'
+        console.log(info.hasOwnProperty("name"));
+        console.log(Object.hasOwn(info, "name"));
     </script>
 </body>
 

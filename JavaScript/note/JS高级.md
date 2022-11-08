@@ -431,17 +431,7 @@
 
 # 三、深入JavaScript的运行原理
 
-## 3.1 JavaScript代码的执行
-
-- **JavaScript代码下载好之后，是如何一步步被执行的呢？**
-- **我们知道，浏览器内核是由两部分组成的，以webkit为例**：
-  - `WebCore`：负责HTML解析、布局、渲染等等相关的工作；
-  - `JavaScriptCore`：解析、执行JavaScript代码；
-- **另外一个强大的JavaScript引擎就是V8引擎。**
-
-
-
-## 3.2 V8引擎的架构
+## 3.1 V8引擎的架构
 
 - V8引擎本身的源码**非常复杂**，大概有超过**100w行C++代码**，通过了解它的架构，我们可以知道它是如何对JavaScript执行的：
 - `Parse`模块会将JavaScript代码转换成AST（抽象语法树），这是因为解释器并不直接认识JavaScript代码；
@@ -459,7 +449,7 @@
 
 
 
-## 3.3 初始化全局对象
+## 3.2 初始化全局对象
 
 - js引擎会在`执行代码之前`，会在`堆内存中创建一个全局对象`：Global Object（GO）
   - 该对象 `所有的作用域（scope）`都可以访问；
@@ -468,7 +458,7 @@
 
 
 
-## 3.4 执行上下文（ Execution Contexts ）
+## 3.3 执行上下文（ Execution Contexts ）
 
 - js引擎内部有一个**执行上下文栈（Execution Context Stack，简称ECS）**，它是用于执行**代码的调用栈**。
 - 那么现在它要执行谁呢？执行的是**全局的代码块**：
@@ -481,14 +471,14 @@
 
 
 
-## 3.5 认识VO对象（Variable Object）
+## 3.4 认识VO对象（Variable Object）
 
 - **每一个执行上下文会关联一个`VO（Variable Object，变量对象），变量和函数声明`会被添加到这个VO对象中**。
 - **当全局代码被执行的时候，VO就是GO对象了**
 
 
 
-## 3.6 函数如何被执行呢？
+## 3.5 函数如何被执行呢？
 
 - 在执行的过程中**执行到一个函数时**，就会根据**函数体**创建一个**函数执行上下文（Functional Execution Context，简称FEC）**，
   并且压入到**EC Stack**中。
@@ -499,7 +489,7 @@
 
 
 
-## 3.7 作用域和作用域链（Scope Chain）
+## 3.6 作用域和作用域链（Scope Chain）
 
 - **当进入到一个执行上下文时，执行上下文也会关联一个作用域链（Scope Chain）**
   - `作用域链是一个对象列表`，用于变量标识符的求值；
@@ -641,7 +631,7 @@
 
 
 
-# 五、JavaScript函数的增强知识
+# 五、JavaScript中的函数
 
 ## 5.1 函数的返回值
 
@@ -1214,7 +1204,7 @@ function pow2(n,m){
 
 
 
-# 六、JavaScript对象的增强知识
+# 六、JavaScript中的对象
 
 ## 6.1 对象的常见操作
 
@@ -1306,28 +1296,45 @@ delete info.age
 
 
 
-## 6.5 创建对象的方案 – 工厂函数
+## 6.5 创建对象的方案
 
-- **工厂模式**其实是一种常见的**设计模式**；
+- ###### 工厂函数创建
+  - **工厂模式**其实是一种常见的**设计模式**；
 
-- **工厂函数的缺陷**：
+  - **工厂函数的缺陷**：
 
-  - 在打印对象时，对象的类型都是Object类型
+    - 在打印对象时，对象的类型都是Object类型
 
-  ```javascript
-  function createPerson(name,age,height){
-    var p = {}
-    p.name = name
-    p.age = age
-    p.height = height
-    
-    p.eating = function(){
-      console.log(this.name+'在吃东西')
+      ```javascript
+      function createPerson(name,age,height){
+        var p = {}
+        p.name = name
+        p.age = age
+        p.height = height
+        
+        p.eating = function(){
+          console.log(this.name+'在吃东西')
+        }
+        return p
+      }
+      ```
+
+- ###### 构造函数（类)创建
+
+  - 这个构造函数可以确保我们的对象是有Person的类型的；
+
+    ```javascript
+    function Person(name,age){
+      this.name = name
+      this.age = age
+      
+      this.eating = function(){
+        console.log(this.name+'在吃东西')
+      }
     }
-    return p
-  }
-  
-  ```
+    
+    const p1 = new Person('陈卓林', 18)
+    ```
 
 
 
@@ -1345,158 +1352,130 @@ delete info.age
 
 
 
-## 6.7 创建对象的方案 – 构造函数（类）
+## 6.7 属性描述符
 
-- 这个构造函数可以确保我们的对象是有Person的类型的；
+- ###### 对属性操作的控制：
 
-  ```JavaScript
-  function Person(name,age){
-    this.name = name
-    this.age = age
-    
-    this.eating = function(){
-      console.log(this.name+'在吃东西')
-    }
-  }
-  
-  const p1 = new Person('陈卓林',18)
-  ```
+  - 在前面我们的属性都是`直接定义在对象内部`，或者`直接添加到对象内部`的：
 
+    - 但是这样来做的时候我们就`不能对这个属性进行一些限制`：比如`这个属性是否是可以通过delete删除的`？这个属性`是否在for-in遍历的时候被遍历出来`呢？
 
+      ```JavaScript
+      var obj = {
+        name: "why",
+        age: 18,
+        height: 1.88
+      }
+      ```
 
-## 6.8 对属性操作的控制
+  - 如果我们想要对`一个属性进行比较精准的操作控制`，那么我们就可以使用`属性描述符`。
 
-- 在前面我们的属性都是`直接定义在对象内部`，或者`直接添加到对象内部`的：
+    - 通过属性描述符`可以精准的添加或修改对象的属性`；
+    - 属性描述符需要使用 `Object.defineProperty` 来对属性进行添加或者修改；
 
-  - 但是这样来做的时候我们就`不能对这个属性进行一些限制`：比如`这个属性是否是可以通过delete删除的`？这个属性`是否在for-in遍历的时候被遍历出来`呢？
+- ###### Object.defineProperty
 
-    ```JavaScript
-    var obj = {
-      name: "why",
-      age: 18,
-      height: 1.88
-    }
-    ```
+  - **Object.defineProperty()** 方法会直接在一个对象上定义一个新属性，或者修改一个对象的现有属性，并返回此对象。
+    - `Object.defineProperty(obj, prop, descriptor)`
+  - 可接收三个参数：
+    - obj要定义属性的对象；
+    - prop要定义或修改的属性的名称或 Symbol；
+    - descriptor要定义或修改的属性描述符；
+  - 返回值：
+    - 被传递给函数的对象。
 
-- 如果我们想要对`一个属性进行比较精准的操作控制`，那么我们就可以使用`属性描述符`。
+- ###### 属性描述符分类
+  - 属性描述符的类型有两种：
 
-  - 通过属性描述符`可以精准的添加或修改对象的属性`；
-  - 属性描述符需要使用 `Object.defineProperty` 来对属性进行添加或者修改；
+    - `数据属性`（Data Properties）描述符（Descriptor）；
 
-
-
-## 6.9 Object.defineProperty
-
-- **Object.defineProperty()** 方法会直接在一个对象上定义一个新属性，或者修改一个对象的现有属性，并返回此对象。
-  - `Object.defineProperty(obj, prop, descriptor)`
-- 可接收三个参数：
-  - obj要定义属性的对象；
-  - prop要定义或修改的属性的名称或 Symbol；
-  - descriptor要定义或修改的属性描述符；
-- 返回值：
-  - 被传递给函数的对象。
-
-
-
-## 6.10 属性描述符分类
-
-- 属性描述符的类型有两种：
-
-  - `数据属性`（Data Properties）描述符（Descriptor）；
-
-  - `存取属性`（Accessor访问器 Properties）描述符（Descriptor）；
+    - `存取属性`（Accessor访问器 Properties）描述符（Descriptor）；
 
     |            | configurable | enumerable | value | writable | get  | set  |
     | ---------- | :----------: | :--------: | :---: | :------: | :--: | :--: |
     | 数据描述符 |      √       |     √      |   √   |    √     |  ×   |  ×   |
     | 存取描述符 |      √       |     √      |   ×   |    ×     |  √   |  √   |
 
+- ###### 数据属性描述符:
 
+  - **数据数据描述符有如下四个特性：**
+  - **[[Configurable]]**：表示属性是否可以通过 delete 删除属性，是否可以修改它的特性，或者是否可以将它修改为存取属性描述符；
+    - 当我们直接在一个对象上定义某个属性时，这个属性的**[[Configurable]]**为`true`；
+    - 当我们通过属性描述符定义一个属性时，这个属性的**[[Configurable]]**默认为`false`；
+  - **[[Enumerable]]**：表示属性是否可以通过`for-in`或者`Object.keys()`返回该属性；
+    - 当我们直接在一个对象上定义某个属性时，这个属性的**[[Enumerable]]**为`true`；
+    - 当我们通过属性描述符定义一个属性时，这个属性的**[[Enumerable]]**默认为`false`；
+  - **[[Writable]]**：表示是否可以修改属性的值；
+    - 当我们直接在一个对象上定义某个属性时，这个属性的**[[Writable]]**为`true`；
+    - 当我们通过属性描述符定义一个属性时，这个属性的**[[Writable]]**默认为`false`；
+  - **[[value]]**：属性的value值，读取属性时会返回该值，修改属性时，会对其进行修改；
+    - 默认情况下这个值是undefined；
 
-## 6.11 数据属性描述符
+- ###### 存取属性描述符:
 
-- **数据数据描述符有如下四个特性：**
-- **[[Configurable]]**：表示属性是否可以通过 delete 删除属性，是否可以修改它的特性，或者是否可以将它修改为存取属性描述符；
-  - 当我们直接在一个对象上定义某个属性时，这个属性的**[[Configurable]]**为`true`；
-  - 当我们通过属性描述符定义一个属性时，这个属性的**[[Configurable]]**默认为`false`；
-- **[[Enumerable]]**：表示属性是否可以通过`for-in`或者`Object.keys()`返回该属性；
-  - 当我们直接在一个对象上定义某个属性时，这个属性的**[[Enumerable]]**为`true`；
-  - 当我们通过属性描述符定义一个属性时，这个属性的**[[Enumerable]]**默认为`false`；
-- **[[Writable]]**：表示是否可以修改属性的值；
-  - 当我们直接在一个对象上定义某个属性时，这个属性的**[[Writable]]**为`true`；
-  - 当我们通过属性描述符定义一个属性时，这个属性的**[[Writable]]**默认为`false`；
-- **[[value]]**：属性的value值，读取属性时会返回该值，修改属性时，会对其进行修改；
-  - 默认情况下这个值是undefined；
+  - **数据数据描述符有如下四个特性：**
 
+  - **[[Configurable]]**：表示属性是否可以通过 delete 删除属性，是否可以修改它的特性，或者是否可以将它修改为存取属性描述符；
 
+    - 当我们直接在一个对象上定义某个属性时，这个属性的**[[Configurable]]**为true；
+    - 当我们通过属性描述符定义一个属性时，这个属性的**[[Configurable]]**默认为false；
 
-## 6.12 存取属性描述符
+  - **[[Enumerable]]**：表示属性是否可以通过`for-in`或者`Object.keys()`返回该属性；
 
-- **数据数据描述符有如下四个特性：**
+    - 当我们直接在一个对象上定义某个属性时，这个属性的**[[Enumerable]]**为`true`；
+    - 当我们通过属性描述符定义一个属性时，这个属性的**[[Enumerable]]**默认为`false`；
 
-- **[[Configurable]]**：表示属性是否可以通过 delete 删除属性，是否可以修改它的特性，或者是否可以将它修改为存取属性描述符；
+  - **[[get]]**：获取属性时会执行的函数。默认为`undefined`
 
-  - 当我们直接在一个对象上定义某个属性时，这个属性的**[[Configurable]]**为true；
-  - 当我们通过属性描述符定义一个属性时，这个属性的**[[Configurable]]**默认为false；
+  - **[[set]]**：设置属性时会执行的函数。默认为`undefined`
 
-- **[[Enumerable]]**：表示属性是否可以通过`for-in`或者`Object.keys()`返回该属性；
-
-  - 当我们直接在一个对象上定义某个属性时，这个属性的**[[Enumerable]]**为`true`；
-  - 当我们通过属性描述符定义一个属性时，这个属性的**[[Enumerable]]**默认为`false`；
-
-- **[[get]]**：获取属性时会执行的函数。默认为`undefined`
-
-- **[[set]]**：设置属性时会执行的函数。默认为`undefined`
-
-  ```javascript
-  "use strict"
-  
-  var obj = {
-    name: "why",
-    age: 18
-  }
-  
-  let address = '北京市'
-  
-  Object.defineProperty(obj,"address", {
-    configurable: true,
-    enumerable: true,
-    get: function(){
-      return address
-    },
-    set: function(value){
-      address = value
+    ```javascript
+    "use strict"
+    
+    var obj = {
+      name: "why",
+      age: 18
     }
-  })
-  ```
-
-
-
-## 6.13 同时定义多个属性
-
-- **Object.defineProperties()** 方法直接在一个对象上定义 **多个** 新的属性或修改现有属性，并且返回该对象。
-
-  ```JavaScript
-  var obj = {
-    _age: 18
-  }
-  
-  Object.defineProperties(obj, {
-    name: {
-      writable: true,
-      value: "why"
-    },
-    age: {
-      get: function() {
-        return this._age
+    
+    let address = '北京市'
+    
+    Object.defineProperty(obj,"address", {
+      configurable: true,
+      enumerable: true,
+      get: function(){
+        return address
+      },
+      set: function(value){
+        address = value
       }
+    })
+    ```
+
+- ###### 同时定义多个属性
+
+  - **Object.defineProperties()** 方法直接在一个对象上定义 **多个** 新的属性或修改现有属性，并且返回该对象。
+
+    ```javascript
+    var obj = {
+      _age: 18
     }
-  })
-  ```
+    
+    Object.defineProperties(obj, {
+      name: {
+        writable: true,
+        value: "why"
+      },
+      age: {
+        get: function() {
+          return this._age
+        }
+      }
+    })
+    ```
 
 
 
-## 6.14 对象方法补充
+## 6.8 对象方法补充
 
 - **获取对象的属性描述符：**
 
@@ -2448,26 +2427,7 @@ delete info.age
 
 
 
-## 9.8 数值的表示
-
-- 在ES6中规范了二进制和八进制的写法：
-
-- 另外在ES2021新增特性：数字过长时，可以使用_作为连接符
-
-  ```javascript
-  // 1.十进制
-  const num1 = 100
-  // 2.十六进制 hexadecimal
-  var num2 = 0x100
-  // 3.八进制 octonary
-  var num3 = 0o100
-  // 4.二进制 binary
-  var num4 = 0b100
-  ```
-
-  
-
-## 9.9 Symbol
+## 9.8 Symbol
 
 - ###### Symbol的基本使用
 
@@ -2539,7 +2499,7 @@ delete info.age
 
 
 
-## 9.10 Set
+## 9.9 Set
 
 - ###### Set的基本使用
 
@@ -2580,7 +2540,7 @@ delete info.age
 
 
 
-## 9.11 WeakSet
+## 9.10 WeakSet
 
 - ###### WeakSet使用
 
@@ -2628,7 +2588,7 @@ delete info.age
 
 
 
-## 9.12 Map
+## 9.11 Map
 
 - ###### Map的基本使用
 
@@ -2676,7 +2636,7 @@ delete info.age
 
 
 
-## 9.13 WeakMap
+## 9.12 WeakMap
 
 - ###### WeakMap的使用
 
@@ -2735,7 +2695,437 @@ delete info.age
 
 
 
-## 9.14 ES7 - Array Includes
+## 9.13 ES7
+
+- ###### Array Includes
+
+  - 在ES7之前，如果我们想判断一个数组中是否包含某个元素，需要通过 indexOf 获取结果，并且判断是否为 -1。
+
+  - 在ES7中，我们可以通过**includes**来判断一个数组中是否包含一个指定的元素，根据情况，如果包含则返回 true，否则返回false。
+
+    ```javascript
+    const names = [1,3,4,4,5]
+    
+    if (names.includes("why")) {
+      console.log("包含why")
+    }
+    
+    if(names.includes("why", 4)) {
+      console.log("包含why")
+    }
+    ```
+
+- ###### 指数exponentiation运算符
+
+  - 在ES7之前，计算数字的乘方需要通过 Math.pow 方法来完成。
+
+  - 在ES7中，增加了  `** 运算符`，可以对数字来计算乘方。
+
+    ```javascript
+    const result1 = Math.pow(3, 3)
+    const result2 = 3 ** 3
+    ```
+
+
+
+## 9.14 ES8
+
+- ###### Object values
+
+  - 之前我们可以通过 `Object.keys` 获取一个对象所有的key
+
+  - **在ES8中提供了 `Object.values` 来获取所有的value值：**
+
+    ```javascript
+    const obj = {
+    	name: "why",
+      age: 18
+    }
+    
+    console.log(Object.values(obj)) // ["why", 18]
+    
+    // 如果传入一个字符串
+    console.log(Object.values("abc")) // ['a','b','c']
+    ```
+
+- ###### Object entries
+
+  - **通过 `Object.entries` 可以获取到一个数组，数组中会存放可枚举属性的键值对数组。**
+
+    - 可以针对`对象、数组、字符串`进行操作；
+
+    ```javascript
+    const obj = {
+      name: 'why',
+      age: 18,
+      height: 1.88
+    }
+    
+    console.log(Object.entries(obj)) // [ ['name', 'why'], ['age', 18], ['height', 1.88] ]
+    for(const entry of Object.entries(obj)) {
+      const [key, value] = entry
+      console.log(key, value)
+    }
+    
+    // 如果是一个数组
+    console.log(Object.entries(["abc","cba","nba"])) // [ ['0', 'abc'], ['1', 'cba'], ['2', 'nba'] ]
+    
+    // 如果是一个字符串
+    console.log(Object.entries("abc")) // [ ['0', 'a'], ['1', 'b'], ['2', 'c'] ]
+    ```
+
+- ###### String Padding
+
+  - 某些字符串我们需要对其进行前后的填充，来实现某种格式化效果，ES8中增加了 `padStart 和 padEnd` 方法，分别是`对字符串
+    的首尾进行填充`的。
+
+    ```javascript
+    const message = "Hello World"
+    
+    console.log(message.padStart(15, "a")) // aaaaHello World
+    console.log(message.padEnd(15, 'b')) // Hello Worldbbbb
+    ```
+
+  - **我们简单具一个应用场景：比如需要对身份证、银行卡的前面位数进行隐藏：**
+
+    ```javascript
+    const cardNumber = '3242536473647364834'
+    const lastFourNumber = cardNumber.slice(-4)
+    const finalCardNumber = lastFourNumber.padStart(cardNumber.length, "*")
+    console.log(finalCardNumber) // ***************4834
+    ```
+
+- ###### Trailing Commas
+
+  - **在ES8中，我们允许在函数定义和调用时`多加一个逗号`：**
+
+    ```javascript
+    function foo(a, b,) {
+      console.log(a, b)
+    }
+    
+    foo(10, 20, )
+    ```
+
+- ###### Object.getOwnPropertyDescriptors
+
+  - 获取对象属性描述符
+
+    ```javascript
+    var obj = {
+      name: "why",
+      age: 18
+    }
+    
+    // 1.获取属性描述符
+    console.log(Object.getOwnPropertyDescriptors(obj))
+    ```
+
+
+
+## 9.15 ES10
+
+- ###### flat flatMap
+
+  - **flat() 方法会按照一个可指定的深度递归遍历数组，并将所有元素与遍历到的子数组中的元素合并为一个新数组返回。**
+
+    ```JavaScript
+    const nums = [10,20,[5,8], [[2,3],[9,22]]
+    
+    const newNums1 = nums.flat(1) // [10, 20, 5, 8, [2,3], [9,22]]
+    const newNums2 = nums.flat(2) // [10, 20, 5, 8, 2, 3, 9, 22]
+    ```
+
+  - **flatMap() 方法首先使用映射函数映射每个元素，然后将结果压缩成一个新数组。**
+
+    - 注意一：flatMap是先进行map操作，再做flat的操作；
+
+    - 注意二：flatMap中的flat相当于深度为1；
+
+      ```javascript
+      const message = ["hello world","你好 小陈","my name is abc"]
+      
+      const newMessage = message.flatMap(item => {
+          return item.split(" ")
+      })
+      console.log(newMessage)
+      ```
+
+- ###### Object fromEntries
+
+  - **在前面，我们可以通过 Object.entries 将一个对象转换成 entries**
+
+  - 那么如果我们有一个entries了，如何将其转换成对象呢？
+
+    - ES10提供了 `Object.formEntries`来完成转换：
+
+  - **应用场景**
+
+    ```javascript
+    // 应用场景1
+    const obj = {
+      name: "why",
+      age: 18
+    }
+    
+    const entries = Object.entries(obj)
+    const info = Object.fromEntries(entries)
+    console.log(info)
+    
+    // 应用场景二
+    const paramsString = 'name=why&age=18&height=1.88'
+    const searchParams = new URLSearchParams(paramsString)
+    for(const param of searchParams) {
+      console.log(param)
+    }
+    const searchObj = Object.fromEntries(searchParams)
+    console.log(searchObj)
+    ```
+
+- ###### trimStart trimEnd
+
+  - **去除一个字符串首尾的空格，我们可以通过trim方法，如果单独去除前面或者后面呢？**
+
+    - ES10中给我们提供了`trimStart和trimEnd`；
+
+      ```javascript
+      const message = "    Hello World    "
+      message.trimStart()
+      message.trimEnd()
+      ```
+
+
+
+## 9.16 ES11
+
+- ###### BigInt
+
+  - **在早期的JavaScript中，我们不能正确的表示过大的数字：**
+
+    - 大于MAX_SAFE_INTEGER的数值，表示的可能是不正确的。
+
+  - **那么ES11中，引入了新的数据类型BigInt，用于表示大的整数：**
+
+    - BitInt的表示方法是在数值的后面加上n
+
+      ```javascript
+      const maxInt = Number.MAX_SAFE_INTEGER
+      console.log(maxInt)
+      
+      // 大于MAX_SAFE_INTEGER值的一些数值，无法正确的表示
+      console.log(maxInt + 1) // 9007199254740992
+      console.log(maxInt + 2) // 9007199254740992
+      
+      const bigInt = 9007199254740991n
+      console.log(bigInt + 1n)
+      console.log(bigInt + 2n)
+      ```
+
+- ###### 空值合并操作符 Nullish Coalescing Operator
+
+  - **ES11，Nullish Coalescing Operator增加了空值合并操作符：**
+
+    ```javascript
+    const foo = ""
+    
+    const result1 = foo || '默认值' // 默认值
+    const result2 = foo ?? '默认值' // " "
+    ```
+
+- ###### 可选链 Optional Chaining
+
+  - **`可选链`也是`ES11中新增一个特性`，主要作用是让我们的代码在`进行null和undefined判断时更加清晰`和简洁：**
+
+    ```javascript
+    const obj = {
+      friend: {
+        girlFriend: {
+          name: 'Lucy'
+        }
+      }
+    }
+    
+    if(obj.friend && obj.friend.girlFriend) {
+      console.log(obj.friend.girlFriend.name)
+    }
+    
+    // 可选链的方式
+    console.log(obj.friend?.girlFriend?.name)
+    ```
+
+- ###### Global This
+
+  - **在之前我们希望获取JavaScript环境的全局对象，不同的环境获取的方式是不一样的**
+
+    - 比如在浏览器中可以通过this、window来获取；
+    - 比如在Node中我们需要通过global来获取；
+
+  - **在ES11中对获取全局对象进行了统一的规范：globalThis**
+
+    ```javascript
+    console.log(globalThis)
+    console.log(this) // 浏览器上
+    console.log(global) // Node上
+    ```
+
+- ###### for..in标准化
+
+  - **在ES11之前，虽然很多浏览器支持for...in来遍历`对象类型`，但是并没有被ECMA标准化。**
+
+  - **在ES11中，对其进行了标准化，`for...in是用于遍历对象`的key的：**
+
+    ```javascript
+    const obj = {
+      name: "why",
+      age: 18
+    }
+    
+    for (const key in obj) {
+      console.log(key)
+    }
+    ```
+
+
+
+## 9.17 ES12
+
+- ###### FinalizationRegistry
+
+  - **`FinalizationRegistry` 对象可以让你在对象被垃圾回收时请求一个回调。**
+
+    - FinalizationRegistry 提供了这样的一种方法：当一个`在注册表中注册的对象被回收`时，`请求在某个时间点上调用一个清理回
+      调`。（清理回调有时被称为 finalizer ）;
+
+    - 你可以通过`调用register方法`，`注册任何你想要清理回调的对象，传入该对象和所含的值`;
+
+      ```javascript
+      let obj = { name: "why" }
+      
+      const registry = new FinalizationRegistry(value => {
+          console.log('被销毁了', value);
+      })
+      
+      registry.register(obj, "obj")
+      
+      setTimeout(() => {
+          obj = null
+      }, 1000);
+      ```
+
+- ###### WeakRefs
+
+  - 如果我们默认将一个对象赋值给另外一个引用，那么这个引用是一个强引用：
+
+    - 如果我们希望是一个弱引用的话，可以使用WeakRef；
+
+    ```javascript
+    let obj = {name: "why"}
+    let info = new WeakRef(obj)
+    ```
+
+- ###### 逻辑赋值运算符：logical assignment operators
+
+  ```JavaScript
+  // 1.逻辑或运算符
+  let message = ""
+  // message = message || "hello world"
+  message ||= "hello world"
+  
+  let obj = {
+    name: "why"
+  }
+  
+  // 2.逻辑与运算符
+  // obj = obj && obj.foo()
+  obj &&= obj.name
+  
+  // 3.逻辑空运算符
+  let foo = null
+  foo ??= "默认值"
+  console.log(foo)
+  ```
+
+
+
+## 9.18 ES13
+
+- ###### method .at()
+
+  - 前面我们有学过字符串、数组的at方法，它们是作为ES13中的新特性加入的：
+
+    ```javascript
+    // 1.数组
+    var names = ['abc', 'cba', 'nba']
+    console.log(names.at(1))
+    console.log(names.at(-1))
+    
+    // 2.字符串
+    var str = "hello world"
+    console.log(str.at(1))
+    console.log(str.at(-1))
+    ```
+
+- ###### Object.hasOwn(obj, propKey)
+
+  - Object中新增了一个静态方法（类方法）： hasOwn(obj, propKey)
+
+    - 该方法用于判断一个对象中是否有某个自己的属性；
+
+  - 那么和之前学习的Object.prototype.hasOwnProperty有什么区别呢？
+
+    - 区别一：防止对象内部有重写hasOwnProperty
+
+    - 区别二：对于隐式原型指向null的对象， hasOwnProperty无法进行判断
+
+      ```javascript
+      var obj = {
+          name: "czl",
+          age: 18,
+          hasOwnProperty: function() {
+              return false
+          }
+      }
+      
+      var info = Object.create(null)
+      info.name = 'why'
+      console.log(info.hasOwnProperty("name")); // 报错
+      console.log(Object.hasOwn(info, "name")); // 可以判断 返回true
+      ```
+
+- ###### New members of classes：定义类字段的其他方式
+
+  - 在ES13中，新增了定义class类中成员字段（field）的其他方式：
+
+    ```javascript
+    class Person {
+      address = "中国"
+    	static totalCount = "70亿"
+    
+      // 只能类内部访问
+    	#sex = "male"
+    	static #maleCount = "10亿"
+      
+      constructor(name, age) {
+        this.name = name
+        this.age = age
+      }
+    
+    	// 静态代码块
+    	static {
+        console.log("static block execution")
+      }
+    
+    	printInfo() {
+        console.log(this.address, this.#sex, Person.#maleCount)
+      }
+    }
+    ```
+
+    
+
+
+
+
 
 
 
