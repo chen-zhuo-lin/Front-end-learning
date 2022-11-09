@@ -122,60 +122,66 @@
 
 ## 2.3 String类型
 
-- **三种包含字符串的方式**
+### 2.3.1 创建字符串的方式
+
+```JavaScript
+var name = '陈卓林'
+var address = "广州市"
+// ES6语法
+var description = `${name}是${address}的人`
+```
+
+### 2.3.2 字符串拼接
+
+```JavaScript
+var str1 = 'hello'
+var str2 = 'world'
+var newStr = str1 + str2
+
+// 语法: str.concat(str2,[, ...strN])
+'hello'.concat('world',['你好'])
+```
+
+### 2.3.3 获取字符串长度
+
+```javascript
+console.log(newStr.length)
+```
+
+### 2.3.4 访问字符串的字符
+
+- 使用方法一：通过字符串的索引` str[0]`
+- 使用方法二：通过`str.charAt(pos)`方法
+- 它们的区别是索引的方式没有找到会返回`undefined`，而`charAt`没有找到会返回空字符串；
+
+### 2.3.5 修改字符串(大小写)
+
+- toLowerCase()：将所有的字符转成小写；
+
+- toUpperCase() ：将所有的字符转成大写；
 
   ```JavaScript
-  var name = '陈卓林'
-  var address = "广州市"
-  // ES6语法
-  var description = `${name}是${address}的人`
+  var message = 'Hello'
+  message.toLowerCase() // hello
+  message.toUpperCase() // HELLO
   ```
 
-- **字符串拼接，通过+运算符**
+### 2.3.6 查找字符串位置 
 
-  ```JavaScript
-  var str1 = 'hello'
-  var str2 = 'world'
-  var newStr = str1 + str2
-  ```
-
-- **获取字符串长度**
-
-  ```javascript
-  console.log(newStr.length)
-  ```
-
-- **访问字符串的字符**
-
-  - 使用方法一：通过字符串的索引` str[0]`
-  - 使用方法二：通过`str.charAt(pos)`方法
-  - 它们的区别是索引的方式没有找到会返回`undefined`，而`charAt`没有找到会返回空字符串；
-
-- **修改字符串**
-
-  - toLowerCase()：将所有的字符转成小写；
-
-  - toUpperCase() ：将所有的字符转成大写；
-
-    ```JavaScript
-    var message = 'Hello'
-    message.toLowerCase() // hello
-    message.toUpperCase() // HELLO
-    ```
-
-- **查找字符串位置  `str.indexOf(search [, fromIndex])`**
-
+- 语法:  `str.indexOf(search [, fromIndex])`
   - 从fromIndex开始，查找searchValue的索引；
   - 如果没有找到，那么返回-1；
-  - 有一个相似的方法，叫lastIndexOf，从最后开始查找（用的较少）
+- 有一个相似的方法，叫lastIndexOf，从最后开始查找（用的较少）
 
-- **是否包含字符串  `str.includes(searchString[, position])**`
+### 2.3.7 是否包含字符串
 
+- 语法:  `str.includes(searchString[, position])`
   - 从position位置开始查找searchString， 根据情况返回 true 或 false
   - 这是ES6新增的方法
 
-- **以xxx开头  `str.startsWith(searchString[, position])`**
+### 2.3.8 以xxx开头
 
+- 语法: `str.startsWith(searchString[, position])`
   - 从position位置开始，判断字符串是否以searchString开头；
 
   - 这是ES6新增的方法，下面的方法也一样；
@@ -184,16 +190,19 @@
     message.startsWith("czl")
     ```
 
-- **以xxx结尾  `str.endsWith(searchString[, length])`**
+### 2.3.9 以xxx结尾 
 
+- 语法:  `str.endsWith(searchString[, length])`
   - 在length长度内，判断字符串是否以searchString结尾；
 
     ```javascript
     message.endsWith("czl")
     ```
 
-- **替换字符串  `str.replace(regexp|substr, newstr, newSubStr|function)`**
-  
+### 2.3.10 替换字符串
+
+- 语法:  `str.replace(regexp|substr, newstr, newSubStr|function)`
+
 - 查找到对应的字符串，并且使用新的字符串进行替代；
   
 - 这里也可以传入一个正则表达式来查找，也可以传入一个函数来替换；
@@ -201,27 +210,22 @@
     ```javascript
     message.replace("czl", "kobe")
   ```
-  
-- **获取子字符串**
 
-  - 开发中推荐使用slice方法
+### 2.3.11  获取子字符串
 
-  |         方法          |              选择方式……               |     负值参数      |
-  | :-------------------: | :-----------------------------------: | :---------------: |
-  |   slice(start, end)   |      从 start 到 end（不含 end）      |       允许        |
-  | substring(start, end) |      从 start 到 end（不含 end）      |    负值代表 0     |
-  | substr(start, length) | 从 start 开始获取长为 length 的字符串 | 允许 start 为负数 |
+|           方法            |              选择方式……               |     负值参数      |
+| :-----------------------: | :-----------------------------------: | :---------------: |
+| slice(start, end) // 推荐 |      从 start 到 end（不含 end）      |       允许        |
+|   substring(start, end)   |      从 start 到 end（不含 end）      |    负值代表 0     |
+|   substr(start, length)   | 从 start 开始获取长为 length 的字符串 | 允许 start 为负数 |
 
-- **拼接字符串  `str.concat(str2,[, ...strN])`**
+### 2.3.12 删除首尾空格 
 
-  ```javascript
-  'hello'.concat('world',['你好'])
-  ```
+- 语法: `str.trim()`
 
-- **删除首尾空格  `str.trim()`**
+### 2.3.13 字符串分割 
 
-- **字符串分割  `str.split({separator,[, limit]})`**
-
+- 语法:  `str.split({separator,[, limit]})`
   - separator：以什么字符串进行分割，也可以是一个正则表达式；
 
   - limit：限制返回片段的数量；
@@ -231,7 +235,7 @@
     console.log(message.split(" ",4)) // ["my","name","is","czl"]
     ```
 
-    
+
 
 ## 2.4 字符串中的转义字符
 
@@ -310,11 +314,12 @@
   }
   ```
 
-- **null和undefined的关系：**
 
-  - `undefined`通常只有在一个变量声明但是未初始化时，它的默认值是`undefined`才会用到；
-  - 不推荐直接给一个变量赋值为`undefined`
-  - `null`值非常常用，当一个变量准备保存一个对象，但是这个对象不确定时，我们可以先赋值为`null`；
+### 2.8.1 null和undefined的关系
+
+- `undefined`通常只有在一个变量声明但是未初始化时，它的默认值是`undefined`才会用到；
+- 不推荐直接给一个变量赋值为`undefined`
+- `null`值非常常用，当一个变量准备保存一个对象，但是这个对象不确定时，我们可以先赋值为`null`；
 
 
 
@@ -599,123 +604,134 @@
 
 ## 5.3 Array数组
 
-- ###### 访问数组中的元素
+### 5.3.1 访问数组中的元素
 
-  - 通过中括号[]访问
-  - arr.at(i)：
-    - 如果 i >= 0，则与 arr[i] 完全相同。
-    - 对于 i 为负数的情况，它则从数组的尾部向前数。
+- 通过中括号[]访问
+- arr.at(i)：
+  - 如果 i >= 0，则与 arr[i] 完全相同。
+  - 对于 i 为负数的情况，它则从数组的尾部向前数。
+
+```javascript
+const a = arr[0]
+const b = arr.at(-1)
+```
+
+### 5.3.2 修改数组中的元素
+
+```javascript
+arr[0] = "czl"
+```
+
+### 5.3.3 push() 和 pop()
+
+- `push `在末端添加元素
+
+- `pop `从末端取出一个元素.
 
   ```javascript
-  const a = arr[0]
-  const b = arr.at(-1)
+  arr.push("abc","dhs")
+  arr.pop()
   ```
 
-- ###### 修改数组中的元素
+### 5.3.4 unshift() 和 shift()
+
+- `shift `取出队列首端的一个元素，整个数组元素向前前移动；
+
+- `unshift `在首端添加元素，整个其他数组元素向后移动；
 
   ```javascript
-  arr[0] = "czl"
+  arr.unshift("curry")
+  arr.shift()
   ```
 
-- ###### 在数组的尾端添加或删除元素
+-  `push/pop` 方法运行的比较快，而 shift/unshift 比较慢。
 
-  - `push `在末端添加元素
+### 5.3.5 arr.splice()
 
-  - `pop `从末端取出一个元素.
+- 它可以做所有事情：添加，删除和替换元素。
 
-    ```javascript
-    arr.push("abc","dhs")
-    arr.pop()
-    ```
+- 语法：`array.splice(start[, delectCount[, item1[, item2[, ...]]]])`
 
-- ###### 在数组的首端添加或删除元素
+  - 从start位置开始，处理数组中的元素；
+  - deleteCount：要删除元素的个数，如果为0或者负数表示不删除；
+  - item1, item2, ...：在添加元素时，需要添加的元素
 
-  - `shift `取出队列首端的一个元素，整个数组元素向前前移动；
+  ```javascript
+  // 删除一个元素
+  arr.aplice(1,1)
+  // 新增两个元素
+  arr.splice(1,0,'a','b')
+  // 替换两个元素
+  arr.splice(1,2,'c','d')
+  ```
 
-  - `unshift `在首端添加元素，整个其他数组元素向后移动；
+- 注意：这个方法会修改原数组
 
-    ```javascript
-    arr.unshift("curry")
-    arr.shift()
-    ```
+### 5.3.6 length属性
 
-  -  `push/pop` 方法运行的比较快，而 shift/unshift 比较慢。
+- 用于获取数组的长度
+- 当我们修改数组的时候，length 属性会自动更新。
+- `length` 属性是可写的
+- 所以，清空数组最简单的方法就是：arr.length = 0。
 
-- ###### `arr.splice`方法
+### 5.3.7 数组的遍历
 
-  - 它可以做所有事情：添加，删除和替换元素。
+- 普通for循环遍历：
 
-  - 语法：`array.splice(start[, delectCount[, item1[, item2[, ...]]]])`
+  ```JavaScript
+  for(var i =0 ;i < arr.length;i++){}
+  ```
 
-    - 从start位置开始，处理数组中的元素；
-    - deleteCount：要删除元素的个数，如果为0或者负数表示不删除；
-    - item1, item2, ...：在添加元素时，需要添加的元素
+- for..in 遍历，获取到索引值：
 
-    ```javascript
-    // 删除一个元素
-    arr.aplice(1,1)
-    // 新增两个元素
-    arr.splice(1,0,'a','b')
-    // 替换两个元素
-    arr.splice(1,2,'c','d')
-    ```
+  ```javascript
+  for(var index in arr){}
+  ```
 
-  - 注意：这个方法会修改原数组
+- for..of 遍历，获取到每一个元素
 
-- ###### `length`属性
+  ```javascript
+  for(var item of arr){}
+  ```
 
-  - 用于获取数组的长度
-  - 当我们修改数组的时候，length 属性会自动更新。
-  - `length` 属性是可写的
-  - 所以，清空数组最简单的方法就是：arr.length = 0。
+### 5.3.8 arr.slice() 
 
-- ###### 数组的遍历
-
-  - 普通for循环遍历：
-
-    ```JavaScript
-    for(var i =0 ;i < arr.length;i++){}
-    ```
-
-  - for..in 遍历，获取到索引值：
-
-    ```javascript
-    for(var index in arr){}
-    ```
-
-  - for..of 遍历，获取到每一个元素
-
-    ```javascript
-    for(var item of arr){}
-    ```
-
-- ###### `arr.slice(begin, end)` 方法：用于对数组进行截取
-
+- 用于对数组进行截取
+- 语法: `arr.slice(begin, end)`
   - 包含bigin元素，但是不包含end元素；
 
-- ###### `arr.concat`方法：创建一个新数组，其中包含来自于其他数组和其他项的值
+### 5.3.9 arr.concat()
+
+- 创建一个新数组，其中包含来自于其他数组和其他项的值
 
   ```javascript
   var newArr = arr.concat(['abc'],"nba")
   ```
 
-- ###### `arr.join`方法： 将一个数组的所有元素连接成一个字符串并返回这个字符串。
+### 5.3.10 arr.join()
+
+- 将一个数组的所有元素连接成一个字符串并返回这个字符串。
 
   ```javascript
   var arr = [1,2,3,4,5]
   var str = arr.join('0') // 1020304050
   ```
 
-- ###### `arr.indexOf(searchElement,fromIndex)`方法： 查找某个元素的索引 
+### 5.3.11 arr.indexOf()
 
+- 语法: `arr.indexOf(searchElement,fromIndex)`
   - 从fromIndex开始查找，如果找到返回对应的索引，没有找到返回-1；
-  - 也有对应的从最后位置开始查找的 lastIndexOf 方法
+- 也有对应的从最后位置开始查找的 lastIndexOf 方法
 
-- ###### `arr.includes(valueToFind, fromIndex)`方法：判断数组是否包含某个元素
+### 5.3.12 arr.includes()
 
+- 判断数组是否包含某个元素
+- 语法: `arr.includes(valueToFind, fromIndex)`
   - 从索引 from 开始搜索 item，如果找到则返回 true（如果没找到，则返回 false）
 
-- ###### `find `和 `findIndex `直接查找元素或者元素的索引（ES6之后新增的语法）
+### 5.3.13 find() 和 findIndex()
+
+- 直接查找元素或者元素的索引（ES6之后新增的语法）
 
   ```javascript
   var student = [{
@@ -731,7 +747,11 @@
   })
   ```
 
-- ###### `arr.sort(compareFunction(a,b))`方法也是一个高阶函数，用于对数组进行排序，并且生成一个排序后的新数组
+### 5.3.14 arr.sort()
+
+- 一个高阶函数，用于对数组进行排序，并且生成一个排序后的新数组
+
+- 语法: `arr.sort(compareFunction(a,b))`
 
   - 如果 compareFunction(a, b) 小于 0 ，那么 a 会被排列到 b 前面；
 
@@ -748,31 +768,34 @@
     })
     ```
 
-- ###### `reverse()` 方法将数组中元素的位置颠倒，并返回该数组。
+### 5.3.15 arr.reverse()
 
-- ###### `arr.forEach`
+- 将数组中元素的位置颠倒，并返回该数组。
 
-  - 遍历数组，并且让数组中每一个元素都执行一次对应的方法；
+### 5.3.16 arr.forEach()
+
+- 遍历数组，并且让数组中每一个元素都执行一次对应的方法；
 
   ```javascript
   arr.forEach((item,index,arr)=>{})
   ```
 
-- ###### `arr.map`
+### 5.3.17 arr.map()
 
-  - map() 方法创建一个新数组；
-  - 这个新数组由原数组中的每个元素都调用一次提供的函数后的返回值组成；
+- map() 方法创建一个新数组；
+- 这个新数组由原数组中的每个元素都调用一次提供的函数后的返回值组成；
 
-  ```javascript
-  const newArr = arr.map((item,index,arr)=>{
-    return item * 10
-  })
-  ```
+```javascript
+const newArr = arr.map((item,index,arr)=>{
+  return item * 10
+})
+```
 
-- ###### `arr.filter`
+### 5.3.18 arr.filter()
 
-  - filter() 方法创建一个新数组；
-  - 新数组中只包含每个元素调用函数返回为true的元素；
+- filter() 方法创建一个新数组；
+
+- 新数组中只包含每个元素调用函数返回为true的元素；
 
   ```javascript
   const newArr = arr.filter((item,index,arr)=>{
@@ -780,11 +803,13 @@
   })
   ```
 
-- ###### `arr.reduce`
+### 5.3.19 arr.reduce()
 
-  - 用于计算数组中所有元素的总和；
-  - 对数组中的每个元素按序执行一个由您提供的 reducer 函数；
-  - 每一次运行 reducer 会将先前元素的计算结果作为参数传入，最后将其结果汇总为单个返回值；
+- 用于计算数组中所有元素的总和；
+
+- 对数组中的每个元素按序执行一个由您提供的 reducer 函数；
+
+- 每一次运行 reducer 会将先前元素的计算结果作为参数传入，最后将其结果汇总为单个返回值；
 
   ```javascript
   const newArr = arr.reduce((previousValue,currentValue)=>{
@@ -796,90 +821,90 @@
 
 ## 5.4 Date对象
 
-- ###### 创建Date对象
+### 5.4.1 创建Date对象
+
+```JavaScript
+// 创建Date对象
+var date = new Date(); // 当前时间（伊尔库茨克标准时间）
+var date2 = new Date(1000); // 传入的毫秒数，表示从1970-01-01 00：00：00 UTC 经过的毫秒数
+var date3 = new Date("2022-08-08"); // 传入的是datestring，日期的字符串值
+// new Date(year,monthIndex [, day [, hours [, minutes [,seconds [, milliseconds]]]]])
+var date4 = new Date(2022, 08, 08, 08, 08, 08, 08);
+```
+
+### 5.4.2 dateString时间的表示方式
+
+- 默认打印的时间格式是RFC 2822标准的：
+
+- ISO 8601 标准。
 
   ```JavaScript
-  // 创建Date对象
-  var date = new Date(); // 当前时间（伊尔库茨克标准时间）
-  var date2 = new Date(1000); // 传入的毫秒数，表示从1970-01-01 00：00：00 UTC 经过的毫秒数
-  var date3 = new Date("2022-08-08"); // 传入的是datestring，日期的字符串值
-  // new Date(year,monthIndex [, day [, hours [, minutes [,seconds [, milliseconds]]]]])
-  var date4 = new Date(2022, 08, 08, 08, 08, 08, 08);
-  ```
-
-- ###### dateString时间的表示方式
-
-  - 默认打印的时间格式是RFC 2822标准的：
-
-  - ISO 8601 标准。
-
-    ```JavaScript
-    // RFC 2822标准
-    new Date() // Thu Nov 03 2022 18:25:49 GMT+0800 (中国标准时间)
-    
-    // ISO 8601标准
-    new Date().toISOString()  // 2022-11-03T10:26:01.251Z
-    ```
-
-- ###### Date获取信息的方法
-
-  ```javascript
-  var dete = new Date()
-  // 1.获取想要的时间信息
-  var year = date.getFullYear(); //获取年份（4 位数）；
-  var month = date.getMonth() + 1; // 获取月份，从 0 到 11；
-  var day = date.getDate(); // 获取当月的具体日期，从 1 到 31
-  var hour = date.getHours(); // 获取小时；
-  var minute = date.getMinutes(); // 获取分钟；
-  var second = date.getSeconds(); // 获取秒钟；
-  var millsecond = date.getMilliseconds(); // 获取毫秒
+  // RFC 2822标准
+  new Date() // Thu Nov 03 2022 18:25:49 GMT+0800 (中国标准时间)
   
-  var weekday = date.getDay(); // 一周中的第几天
+  // ISO 8601标准
+  new Date().toISOString()  // 2022-11-03T10:26:01.251Z
   ```
 
-- ###### Date设置信息的方法
+### 5.4.3 Date获取信息的方法
 
-  ```JavaScript
-  var dete = new Date()
-  // 2.也可以给date设置时间(了解)
-  date.setFullYear(2033);
-  // 自动校验
-  date.setDate(32);
-  ```
+```javascript
+var dete = new Date()
+// 1.获取想要的时间信息
+var year = date.getFullYear(); //获取年份（4 位数）；
+var month = date.getMonth() + 1; // 获取月份，从 0 到 11；
+var day = date.getDate(); // 获取当月的具体日期，从 1 到 31
+var hour = date.getHours(); // 获取小时；
+var minute = date.getMinutes(); // 获取分钟；
+var second = date.getSeconds(); // 获取秒钟；
+var millsecond = date.getMilliseconds(); // 获取毫秒
 
-- ###### Date获取Unix时间戳
+var weekday = date.getDay(); // 一周中的第几天
+```
 
-  ```JavaScript
-  /* 
-  Unix 时间戳：它是一个整数值，表示自1970年1月1日00:00:00 UTC以来的毫秒数。
-      方式一：new Date().getTime()
-      方式二：new Date().valueOf()
-      方式三：+new Date()
-      方式四：Date.now()
-  */
-  var startTime = Date.now();
-  // 测试代码的性能
-  for (let i = 0; i < 10000; i++) {
-    console.log('打印i'，i)
-  }
-  var endTime = Date.now();
-  var result = endTime - startTime
-  console.log('代码执行完成的时间，'result)
-  ```
+### 5.4.4 Date设置信息的方法
 
-- ###### Date.parse方法
+```JavaScript
+var dete = new Date()
+// 2.也可以给date设置时间(了解)
+date.setFullYear(2033);
+// 自动校验
+date.setDate(32);
+```
 
-  ```javascript
-  /* 
-  Date.parse(str) 方法可以从一个字符串中读取日期，并且输出对应的Unix时间戳。
-  Date.parse(str) ：
-      作用等同于 new Date(dateString).getTime() 操作；
-      需要符合 RFC2822 或 ISO 8601 日期格式的字符串；
-          比如YYYY-MM-DDTHH:mm:ss.sssZ
-      如果输入的格式不能被解析，那么会返回NaN；
-  */
-  var time1 = Date.parse("2022-08-08T08:08:08.666Z")
-  ```
+### 5.4.5 Date获取Unix时间戳
+
+```JavaScript
+/* 
+Unix 时间戳：它是一个整数值，表示自1970年1月1日00:00:00 UTC以来的毫秒数。
+    方式一：new Date().getTime()
+    方式二：new Date().valueOf()
+    方式三：+new Date()
+    方式四：Date.now()
+*/
+var startTime = Date.now();
+// 测试代码的性能
+for (let i = 0; i < 10000; i++) {
+  console.log('打印i'，i)
+}
+var endTime = Date.now();
+var result = endTime - startTime
+console.log('代码执行完成的时间，'result)
+```
+
+### 5.4.6 Date.parse方法
+
+```javascript
+/* 
+Date.parse(str) 方法可以从一个字符串中读取日期，并且输出对应的Unix时间戳。
+Date.parse(str) ：
+    作用等同于 new Date(dateString).getTime() 操作；
+    需要符合 RFC2822 或 ISO 8601 日期格式的字符串；
+        比如YYYY-MM-DDTHH:mm:ss.sssZ
+    如果输入的格式不能被解析，那么会返回NaN；
+*/
+var time1 = Date.parse("2022-08-08T08:08:08.666Z")
+```
 
 
 
@@ -1144,44 +1169,44 @@
 
 ## 6.9 元素的特性attribute
 
-- ###### 属性attribute的分类
+### 6.9.1 属性attribute的分类
 
-  - 标准的attribute：某些attribute属性是标准的，比如id、class、href、type、value等；
+- 标准的attribute：某些attribute属性是标准的，比如id、class、href、type、value等；
 
-  - 非标准的attribute：某些attribute属性是自定义的，比如abc、age、height等；
+- 非标准的attribute：某些attribute属性是自定义的，比如abc、age、height等；
 
-    ```html
-    <div class="box" id="main" name="why" abc="anc" age="18" height="1.88">
-      哈哈哈哈
-    </div>
-    ```
+  ```html
+  <div class="box" id="main" name="why" abc="anc" age="18" height="1.88">
+    哈哈哈哈
+  </div>
+  ```
 
-- ###### attribute的操作
+### 6.9.2 attribute的操作
 
-  - `elem.hasAttribute(name)` — 检查特性是否存在。
+- `elem.hasAttribute(name)` — 检查特性是否存在。
 
-  - `elem.getAttribute(name)` — 获取这个特性值。
+- `elem.getAttribute(name)` — 获取这个特性值。
 
-  - `elem.setAttribute(name, value)` — 设置这个特性值。
+- `elem.setAttribute(name, value)` — 设置这个特性值。
 
-  - `elem.removeAttribute(name)` — 移除这个特性。
+- `elem.removeAttribute(name)` — 移除这个特性。
 
-  - `attributes`：attr对象的集合，具有name、value属性；
+- `attributes`：attr对象的集合，具有name、value属性；
 
-    ```JavaScript
-    for(var attr of boxEl.attributes){
-      console.log(attr.name, attr.value)
-    }
-    boxEl.hasAttribute("age") // true
-    boxEl.getAttribute("name") // why
-    boxEl.setAttribute("name", "kobe")
-    boxEl.removeAttribute("abc")
-    ```
+  ```JavaScript
+  for(var attr of boxEl.attributes){
+    console.log(attr.name, attr.value)
+  }
+  boxEl.hasAttribute("age") // true
+  boxEl.getAttribute("name") // why
+  boxEl.setAttribute("name", "kobe")
+  boxEl.removeAttribute("abc")
+  ```
 
-- ###### attribute具备以下特征
+### 6.9.3 attribute具备的特征
 
-  - 它们的名字是大小写不敏感的（id 与 ID 相同）。
-  - 它们的值总是字符串类型的。
+- 它们的名字是大小写不敏感的（id 与 ID 相同）。
+- 它们的值总是字符串类型的。
 
 
 
@@ -1460,46 +1485,46 @@
   - 那么这些信息会被封装到一个`Event`对象中，这个对象由`浏览器`创建，称之为`event对象`；
   - 该对象给我们提供了想要的一些属性，以及可以通过该对象进行某些操作；
 
-- ###### 如何获取这个event对象呢？
+### 7.3.1 获取event对象
 
-  - `event对象`会在`传入的事件处理（event handler）函数回调`时，被系统传入；
+- `event对象`会在`传入的事件处理（event handler）函数回调`时，被系统传入；
 
-  - 我们可以在回调函数中拿到这个`event对象`；
-
-    ```javascript
-    spanEl.onclick = function(event){
-      console.log("事件对象：",event)
-    }
-    spanEl.addEventListener("click", function(event){
-      console.log("事件对象：", event)
-    })
-    ```
-
-- ###### event常见的属性
-
-  - `type`：事件的类型；
-  - `target`：当前事件发生的元素；
-  - `currentTarget`：当前处理事件的元素；
-  - `eventPhase`：事件所处的阶段；
-  - `offsetX、offsetY`：事件发生在元素内的位置；
-  - `clientX、clientY`：事件发生在客户端内的位置；
-  - `pageX、pageY`：事件发生在客户端相对于document的位置；
-  - `screenX、screenY`：事件发生相对于屏幕的位置；
-
-- ###### event常见的方法
-
-  - `preventDefault`：取消事件的默认行为；
-  - `stopPropagation`：阻止事件的进一步传递（冒泡或者捕获都可以阻止）；
-
-- ###### 事件处理中的this
-
-  - 在函数中，我们也可以通过this来获取当前的发生元素：
+- 我们可以在回调函数中拿到这个`event对象`；
 
   ```javascript
-  boxEl.addEventListener("click", function(event){
-    console.log(this === event.target) // true
+  spanEl.onclick = function(event){
+    console.log("事件对象：",event)
+  }
+  spanEl.addEventListener("click", function(event){
+    console.log("事件对象：", event)
   })
   ```
+
+### 7.3.2 event常见的属性
+
+- `type`：事件的类型；
+- `target`：当前事件发生的元素；
+- `currentTarget`：当前处理事件的元素；
+- `eventPhase`：事件所处的阶段；
+- `offsetX、offsetY`：事件发生在元素内的位置；
+- `clientX、clientY`：事件发生在客户端内的位置；
+- `pageX、pageY`：事件发生在客户端相对于document的位置；
+- `screenX、screenY`：事件发生相对于屏幕的位置；
+
+### 7.3.3 event常见的方法
+
+- `preventDefault`：取消事件的默认行为；
+- `stopPropagation`：阻止事件的进一步传递（冒泡或者捕获都可以阻止）；
+
+### 7.3.4 事件处理中的this
+
+- 在函数中，我们也可以通过this来获取当前的发生元素：
+
+```javascript
+boxEl.addEventListener("click", function(event){
+  console.log(this === event.target) // true
+})
+```
 
 
 
@@ -1509,30 +1534,30 @@
 
   - 事实上Window也继承自`EventTarget`；
 
-- ###### 那么这个EventTarget是什么呢？
+### 7.4.1 EventTarget的作用
 
-  - EventTarget是一个`DOM接口`，主要用于`添加、删除、派发Event事件`；
+- EventTarget是一个`DOM接口`，主要用于`添加、删除、派发Event事件`；
 
-- ###### EventTarget常见的方法
+### 7.4.2 EventTarget常见的方法
 
-  - `addEventListener`：注册某个事件类型以及事件处理函数；
+- `addEventListener`：注册某个事件类型以及事件处理函数；
 
-  - `removeEventListener`：移除某个事件类型以及事件处理函数；
+- `removeEventListener`：移除某个事件类型以及事件处理函数；
 
-  - `dispatchEvent`：派发某个事件类型到EventTarget上；
+- `dispatchEvent`：派发某个事件类型到EventTarget上；
 
-    ```javascript
-    var boxEl = document.querySelector(".box")
-    boxEl.addEventListener("click", function(){
-      console.log("点击了box")
-    })
-    boxEl.addEventListener("click",function(){
-      window.dispatchEvent(new Event("czl"))
-    })
-    window.addEventListener("czl",function(event){
-      console.log("监听到czl事件：",event)
-    })
-    ```
+  ```javascript
+  var boxEl = document.querySelector(".box")
+  boxEl.addEventListener("click", function(){
+    console.log("点击了box")
+  })
+  boxEl.addEventListener("click",function(){
+    window.dispatchEvent(new Event("czl"))
+  })
+  window.addEventListener("czl",function(event){
+    console.log("监听到czl事件：",event)
+  })
+  ```
 
 
 
@@ -1713,13 +1738,13 @@
   - `clearTimeout`：取消setTimeout的定时器；
   - `clearInterval`：取消setInterval的定时器；
 
-- ###### `setTimeout`的语法：`let timeId = setTimeout(func|code,[delay],[arg1],[aeg2],...)`
+- **`setTimeout`的语法：`let timeId = setTimeout(func|code,[delay],[arg1],[aeg2],...)**`
 
   - `func|code`：想要执行的函数或代码字符串。
   - `delay`：执行前的延时，以毫秒为单位（1000 毫秒 = 1 秒），默认值是 0；
   - `arg1，arg2…`：要传入被执行函数（或代码字符串）的参数列表；
 
-- ###### clearTimeout方法
+- **clearTimeout方法**
 
   - `setTimeout `在调用时会返回一个`“定时器标识符（timer identifier）”`，我们可以使用它来取消执行。
 
@@ -1730,13 +1755,13 @@
     clearTimeout(timeID)
     ```
 
-- ###### `setInterval`的语法：`let timeId = setInterval(func|code,[delay],[arg1],[aeg2],...)`
+- **`setInterval`的语法：`let timeId = setInterval(func|code,[delay],[arg1],[aeg2],...)`**
 
   - `func|code`：想要执行的函数或代码字符串。
   - `delay`：执行前的延时，以毫秒为单位（1000 毫秒 = 1 秒），默认值是 0；
   - `arg1，arg2…`：要传入被执行函数（或代码字符串）的参数列表；
 
-- ###### `clearInterval`方法
+- `clearInterval`**方法**
 
   - `setInterval`也会返回一个`“定时器标识符（timer identifier）”`，我们可以通过clearInterval来取消这个定时器。
 
@@ -1784,71 +1809,71 @@
   - 放在`window对象`上的所有属性都可以被访问；
   - 使用`var定义的变量会被添加到window对象`中；
 - window默认给我们提供了全局的函数和类：`setTimeout、Math、Date、Object`等；
-  
-- ###### window常见的属性
 
-  ```javascript
-  // 浏览器高度
-  console.log(window.outerHeight)
-  console.log(window.innerHeight)
-  
-  console.log("screenX:",window.screenX)
-  console.log("screenY:",window.screenY)
-  
-  //监听
-  window.addEventListener("scroll",(event) =>{
-    console.log(window.scrollX)
-    console.log(window.scrollY)
-  })
-  ```
+### 8.2.1 window常见的属性
 
-- ###### window常见的方法
+```javascript
+// 浏览器高度
+console.log(window.outerHeight)
+console.log(window.innerHeight)
 
-  ```javascript
-  // close方法
-  const closeBtn = document.querySelector("#close")
-  closeBtn.onclick = function(){
-    window.close()
-  }
-  
-  // scrollTo
-  const scrollBtn = document.querySelector("#scroll")
-  closeBtn.onclick = function(){
-    window.scrollTo({top: 1000 })
-  }
-  
-  // 打开新创建
-  const openBtn = document.querySelector("#open")
-  openBtn.onclick = function(){
-    window.open("./about.html", "_self")
-  }
-  ```
+console.log("screenX:",window.screenX)
+console.log("screenY:",window.screenY)
 
-- ###### window常见的事件
+//监听
+window.addEventListener("scroll",(event) =>{
+  console.log(window.scrollX)
+  console.log(window.scrollY)
+})
+```
 
-  ```javascript
-  window.onfoucs = function(){
-    console.log("窗口获取到焦点")
-  }
-  
-  window.onblur = function(){
-    console.log("窗口失去焦点")
-  }
-  
-  // 整个页面以及所有的资源都加载完成
-  window.onload = function(){
-    console.log("页面加载完成")
-  }
-  
-  // hash改变
-  const hashBtn = document.querySelector("#hash")
-  hashBtn.onclick = function(){
-    location.hash = 'aaa'
-  }
-  window.onhashchange = function() {
-    console.log("hash被改变了")
-  }
-  ```
+### 8.2.2 window常见的方法
+
+```javascript
+// close方法
+const closeBtn = document.querySelector("#close")
+closeBtn.onclick = function(){
+  window.close()
+}
+
+// scrollTo
+const scrollBtn = document.querySelector("#scroll")
+closeBtn.onclick = function(){
+  window.scrollTo({top: 1000 })
+}
+
+// 打开新创建
+const openBtn = document.querySelector("#open")
+openBtn.onclick = function(){
+  window.open("./about.html", "_self")
+}
+```
+
+### 8.2.3 window常见的事件
+
+```javascript
+window.onfoucs = function(){
+  console.log("窗口获取到焦点")
+}
+
+window.onblur = function(){
+  console.log("窗口失去焦点")
+}
+
+// 整个页面以及所有的资源都加载完成
+window.onload = function(){
+  console.log("页面加载完成")
+}
+
+// hash改变
+const hashBtn = document.querySelector("#hash")
+hashBtn.onclick = function(){
+  location.hash = 'aaa'
+}
+window.onhashchange = function() {
+  console.log("hash被改变了")
+}
+```
 
 
 
@@ -1856,35 +1881,35 @@
 
 - location对象用于表示window上当前链接到的URL信息。
 
-- ###### location对象常见的属性
+### 8.3.1 location对象常见的属性
 
-  - `href`: 当前window对应的超链接URL, 整个URL；
-  - `protocol`: 当前的协议；
-  - `host`: 主机地址；
-  - `hostname`: 主机地址(不带端口)；
-  - `port`: 端口；
-  - `pathname`: 路径；
-  - `search`: 查询字符串；
-  - `hash`: 哈希值；
-  - username：URL中的username（很多浏览器已经禁用）；
-  - password：URL中的password（很多浏览器已经禁用）；
+- `href`: 当前window对应的超链接URL, 整个URL；
+- `protocol`: 当前的协议；
+- `host`: 主机地址；
+- `hostname`: 主机地址(不带端口)；
+- `port`: 端口；
+- `pathname`: 路径；
+- `search`: 查询字符串；
+- `hash`: 哈希值；
+- username：URL中的username（很多浏览器已经禁用）；
+- password：URL中的password（很多浏览器已经禁用）；
 
-- ###### location对象常见的方法
+### 8.3.2 location对象常见的方法
 
-  - assign：赋值一个新的URL，并且跳转到该URL中；
+- assign：赋值一个新的URL，并且跳转到该URL中；
 
-  - replace：打开一个新的URL，并且跳转到该URL中（不同的是不会在浏览记录中留下之前的记录）；
+- replace：打开一个新的URL，并且跳转到该URL中（不同的是不会在浏览记录中留下之前的记录）；
 
-  - reload：重新加载页面，可以传入一个Boolean类型；
+- reload：重新加载页面，可以传入一个Boolean类型；
 
-    ```javascript
-    const locationBtn.onclick = document.querySelector("#location")
-    locationBtn.onclick = function(){
-      location.assign("http://www.baidu.com")
-      location.replace("http://www.baidu.com")
-      location.reload()
-    }
-    ```
+  ```javascript
+  const locationBtn.onclick = document.querySelector("#location")
+  locationBtn.onclick = function(){
+    location.assign("http://www.baidu.com")
+    location.replace("http://www.baidu.com")
+    location.reload()
+  }
+  ```
 
 
 
@@ -1902,12 +1927,13 @@
     console.log(urlsearch.toSrting()) // name=why&age=18&height=1.88
     ```
 
-- ###### URLSearchParams常见的方法如下
 
-  - `get`：获取搜索参数的值；
-  - `set`：设置一个搜索参数和值；
-  - `append`：追加一个搜索参数和值；
-  - `has`：判断是否有某个搜索参数；
+### 8.4.1 URLSearchParams常见的方法如下
+
+- `get`：获取搜索参数的值；
+- `set`：设置一个搜索参数和值；
+- `append`：追加一个搜索参数和值；
+- `has`：判断是否有某个搜索参数；
 
 
 
