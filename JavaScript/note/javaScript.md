@@ -2709,7 +2709,7 @@ window.onhashchange = function() {
     器的Linux系统上运行。
   - `V8可以独立运行，也可以嵌入到任何C ++应用程序中`。
 
-  ![1668140292484](C:\Users\czl20\AppData\Roaming\Typora\typora-user-images\1668140292484.png)
+  [![1668140292484](https://s1.ax1x.com/2022/11/11/zCED2T.png)]()
 
 ### 11.2.2 V8引擎的架构
 
@@ -2727,18 +2727,30 @@ window.onhashchange = function() {
     行的是number类型，后来执行变成了string类型）`，之前优化的机器码并不能正确的处理运算，就会逆向的转换成字节码；
   - TurboFan的V8官方文档：https://v8.dev/blog/turbofan-jit
 
+### 11.2.3 V8引擎的解析图（官方）
+
+[![image](https://s1.ax1x.com/2022/11/11/zCE5RK.png)]()
+
+### 11.2.4 V8引擎的解析图
+
+[![image](https://s1.ax1x.com/2022/11/11/zCEHqH.png)]()
 
 
-## 11.2 初始化全局对象
+
+## 11.3 初始化全局对象
 
 - js引擎会在`执行代码之前`，会在`堆内存中创建一个全局对象`：Global Object（GO）
   - 该对象 `所有的作用域（scope）`都可以访问；
+  
   - 里面会包含`Date、Array、String、Number、setTimeout、setInterval`等等；
+  
   - 其中还有一个`window属性`指向自己；
+  
+    [![image](https://s1.ax1x.com/2022/11/11/zCELdA.png)
 
 
 
-## 11.3 执行上下文（ Execution Contexts ）
+## 11.4 执行上下文（ Execution Contexts ）
 
 - js引擎内部有一个**执行上下文栈（Execution Context Stack，简称ECS）**，它是用于执行**代码的调用栈**。
 - 那么现在它要执行谁呢？执行的是**全局的代码块**：
@@ -2751,14 +2763,14 @@ window.onhashchange = function() {
 
 
 
-## 11.4 认识VO对象（Variable Object）
+## 11.5 认识VO对象（Variable Object）
 
 - **每一个执行上下文会关联一个`VO（Variable Object，变量对象），变量和函数声明`会被添加到这个VO对象中**。
 - **当全局代码被执行的时候，VO就是GO对象了**
 
 
 
-## 11.5 函数如何被执行呢？
+## 11.7 函数如何被执行呢？
 
 - 在执行的过程中**执行到一个函数时**，就会根据**函数体**创建一个**函数执行上下文（Functional Execution Context，简称FEC）**，
   并且压入到**EC Stack**中。
@@ -2769,7 +2781,7 @@ window.onhashchange = function() {
 
 
 
-## 11.6 作用域和作用域链（Scope Chain）
+## 11.8 作用域和作用域链（Scope Chain）
 
 - **当进入到一个执行上下文时，执行上下文也会关联一个作用域链（Scope Chain）**
   - `作用域链是一个对象列表`，用于变量标识符的求值；
@@ -3865,7 +3877,7 @@ delete info.age
 
 ## 15.2 创建对象的内存表现
 
-![1667873764203](C:\Users\czl20\AppData\Roaming\Typora\typora-user-images\1667873764203.png)
+![](https://s1.ax1x.com/2022/11/11/zCVEiq.png)
 
 
 
@@ -3990,7 +4002,7 @@ delete info.age
 
 - **从我们上面的Object原型我们可以得出一个结论：`原型链最顶层的原型对象就是Object的原型对象`**
 
-  ![1667877293238](C:\Users\czl20\AppData\Roaming\Typora\typora-user-images\1667877293238.png)
+  ![1667877293238](https://s1.ax1x.com/2022/11/11/zCVJW6.png)
 
 
 
@@ -4385,7 +4397,7 @@ inheritPrototype(Student, Person)
 
 ### 17.1.3 新ECMA描述内存图
 
-![1667894268160](C:\Users\czl20\AppData\Roaming\Typora\typora-user-images\1667894268160.png)
+![1667894268160](https://s1.ax1x.com/2022/11/11/zCVNQO.png)
 
 
 
@@ -7191,8 +7203,10 @@ generator.next().value.then(res => {
 ### 22.2.7 集合（Sets）和范围（Ranges）
 
 - **有时候我们只要选择多个匹配字符的其中之一就可以：**
+  
   - 在方括号 […] 中的几个字符或者字符类意味着“搜索给定的字符中的任意一个”；
 - **集合（Sets）**
+  
   - 比如说，[eao] 意味着查找在 3 个字符 ‘a’、‘e’ 或者 `‘o’ 中的任意一个；
 - **范围（Ranges）**
   - 方括号也可以包含字符范围；
