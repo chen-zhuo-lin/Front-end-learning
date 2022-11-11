@@ -2746,7 +2746,7 @@ window.onhashchange = function() {
   
   - 其中还有一个`window属性`指向自己；
   
-    [![image](https://s1.ax1x.com/2022/11/11/zCELdA.png)
+    ![image](https://s1.ax1x.com/2022/11/11/zCELdA.png)
 
 
 
