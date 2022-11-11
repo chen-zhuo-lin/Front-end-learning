@@ -108,7 +108,7 @@
 
 - 用于判断是否不是一个数字。不是数字返回 true，是数字返回 false。
 
-### 2.2.3 Number实例方法:
+### 2.2.3 Number实例方法
 
 - 方法一：`toString(base)`，将数字转成字符串，并且按照base进制进行转化
   - base 的范围可以从 2 到 36，默认情况下是 10；
@@ -422,7 +422,6 @@ console.log(newStr.length)
   let a, b, c;
   a = b = c = 2 + 2;
   console.log(a, b, c); // 4
-  
   ```
 
 
@@ -1987,7 +1986,7 @@ window.onhashchange = function() {
     
     ```
 
-### 8.4.1 URLSearchParams常见的方法如下
+### 8.4.1 常见的方法
 
 - `get`：获取搜索参数的值；
 - `set`：设置一个搜索参数和值；
@@ -2709,7 +2708,7 @@ window.onhashchange = function() {
     器的Linux系统上运行。
   - `V8可以独立运行，也可以嵌入到任何C ++应用程序中`。
 
-  [![1668140292484](https://s1.ax1x.com/2022/11/11/zCED2T.png)]()
+  [![1668140292484](https://cdn.jsdelivr.net/gh/chen-zhuo-lin/pictures@main/2022-11/zCED2T.png)]()
 
 ### 11.2.2 V8引擎的架构
 
@@ -2729,11 +2728,11 @@ window.onhashchange = function() {
 
 ### 11.2.3 V8引擎的解析图（官方）
 
-[![image](https://s1.ax1x.com/2022/11/11/zCE5RK.png)]()
+[![image](https://cdn.jsdelivr.net/gh/chen-zhuo-lin/pictures@main/2022-11/zCE5RK.png)]()
 
 ### 11.2.4 V8引擎的解析图
 
-[![image](https://s1.ax1x.com/2022/11/11/zCEHqH.png)]()
+[![image](https://cdn.jsdelivr.net/gh/chen-zhuo-lin/pictures@main/2022-11/zCEHqH.png)]()
 
 
 
@@ -2746,7 +2745,7 @@ window.onhashchange = function() {
   
   - 其中还有一个`window属性`指向自己；
   
-    ![image](https://s1.ax1x.com/2022/11/11/zCELdA.png)
+    ![image](https://cdn.jsdelivr.net/gh/chen-zhuo-lin/pictures@main/2022-11/zCELdA.png)
 
 
 
@@ -2774,11 +2773,11 @@ window.onhashchange = function() {
 
 ### 11.6.1 执行前
 
-![](https://s1.ax1x.com/2022/11/11/zCZP1K.png)
+![](https://cdn.jsdelivr.net/gh/chen-zhuo-lin/pictures@main/2022-11/zCZP1K.png)
 
 ### 11.6.2 执行后
 
-![](https://s1.ax1x.com/2022/11/11/zCZE0H.png)
+![](https://cdn.jsdelivr.net/gh/chen-zhuo-lin/pictures@main/2022-11/zCZE0H.png)
 
 
 
@@ -2797,11 +2796,11 @@ window.onhashchange = function() {
 
 ### 11.8.1 执行前
 
-![](https://s1.ax1x.com/2022/11/11/zCZYAs.png)
+![](https://cdn.jsdelivr.net/gh/chen-zhuo-lin/pictures@main/2022-11/zCZYAs.png)
 
 ### 11.8.2 执行后
 
-![](https://s1.ax1x.com/2022/11/11/zCZa90.png)
+![](https://cdn.jsdelivr.net/gh/chen-zhuo-lin/pictures@main/2022-11/zCZa90.png)
 
 
 
@@ -2811,7 +2810,7 @@ window.onhashchange = function() {
   - `作用域链是一个对象列表`，用于变量标识符的求值；
   - 当进入一个执行上下文时，这个`作用域链被创建，并且根据代码类型，添加一系列的对象`；
   
-    ![](https://s1.ax1x.com/2022/11/11/zCZcNR.png)
+    ![](https://cdn.jsdelivr.net/gh/chen-zhuo-lin/pictures@main/2022-11/zCZcNR.png)
 
 # 十二、JavaScript内存管理和闭包
 
@@ -2868,7 +2867,7 @@ window.onhashchange = function() {
 
 - 这个算法有一个很大的弊端就是会产生循环引用；
 
-  ![](https://s1.ax1x.com/2022/11/11/zCZHUA.png)
+  ![](https://cdn.jsdelivr.net/gh/chen-zhuo-lin/pictures@main/2022-11/zCZHUA.png)
 
 ### 12.4.2 标记清除
 
@@ -2878,7 +2877,7 @@ window.onhashchange = function() {
 
 - 这个算法`可以很好的解决循环引用`的问题；
 
-  ![](https://s1.ax1x.com/2022/11/11/zCZjv8.png)
+  ![](https://cdn.jsdelivr.net/gh/chen-zhuo-lin/pictures@main/2022-11/zCZjv8.png)
 
 ### 12.4.3 其他算法优化补充
 
@@ -2934,7 +2933,7 @@ window.onhashchange = function() {
 
 ### 12.6.1 闭包的内存泄漏测试
 
-![](https://s1.ax1x.com/2022/11/11/zCeEvT.png)
+![](https://cdn.jsdelivr.net/gh/chen-zhuo-lin/pictures@main/2022-11/zCeEvT.png)
 
 
 
@@ -7449,25 +7448,76 @@ generator.next().value.then(res => {
 
   
 
+# 二十三、防抖-节流-深拷贝-事件总线
+
+## 23.1 认识防抖debounce函数
+
+- **我们用一副图来理解一下它的过程：**
+
+  - 当事件触发时，相应的函数并不会立即触发，而是会等待一定的时间；
+
+  - 当事件密集触发时，函数的触发会被频繁的推迟；
+
+  - 只有等待了一段时间也没有事件触发，才会真正的执行响应函数；
+
+    ![](https://s1.ax1x.com/2022/11/11/zCJMIf.png)
 
 
 
+## 23.2 防抖函数的案例
+
+![](https://s1.ax1x.com/2022/11/11/zCJDWF.png)
 
 
 
+## 23.3 认识节流throttle函数
+
+- **我们用一副图来理解一下节流的过程**
+
+  - 当事件触发时，会执行这个事件的响应函数；
+
+  - 如果这个事件会被频繁触发，那么节流函数会按照一定的频率来执行函数；
+
+  - 不管在这个中间有多少次触发这个事件，执行函数的频繁总是固定的；
+
+    ![](https://s1.ax1x.com/2022/11/11/zCJrz4.png)
 
 
 
+## 23.4 节流函数的应用场景
+
+![](https://s1.ax1x.com/2022/11/11/zCJyQJ.png)
 
 
 
+## 23.5 生活中的例子：防抖和节流
+
+![](https://s1.ax1x.com/2022/11/11/zCJ2e1.png)
 
 
 
+## 23.6 案例准备
+
+![](https://s1.ax1x.com/2022/11/11/zCJHOA.png)
 
 
 
+## 23.7 Underscore库的介绍
+
+![](https://s1.ax1x.com/2022/11/11/zCJ7yd.png)
 
 
 
+## 23.8 Underscore实现防抖和节流
 
+![](C:\Users\czl20\AppData\Roaming\Typora\typora-user-images\1668150917765.png)
+
+
+
+## 23.9 自定义防抖和节流函数
+
+![](https://s1.ax1x.com/2022/11/11/zCYtpD.png)
+
+
+
+## 23.10 自定义深拷贝函数
