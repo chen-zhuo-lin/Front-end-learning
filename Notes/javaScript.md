@@ -2770,6 +2770,18 @@ window.onhashchange = function() {
 
 
 
+## 11.6  全局代码执行过程
+
+### 11.6.1 执行前
+
+![](https://s1.ax1x.com/2022/11/11/zCZP1K.png)
+
+### 11.6.2 执行后
+
+![](https://s1.ax1x.com/2022/11/11/zCZE0H.png)
+
+
+
 ## 11.7 函数如何被执行呢？
 
 - 在执行的过程中**执行到一个函数时**，就会根据**函数体**创建一个**函数执行上下文（Functional Execution Context，简称FEC）**，
@@ -2781,13 +2793,25 @@ window.onhashchange = function() {
 
 
 
-## 11.8 作用域和作用域链（Scope Chain）
+## 11.8 函数的执行过程
+
+### 11.8.1 执行前
+
+![](https://s1.ax1x.com/2022/11/11/zCZYAs.png)
+
+### 11.8.2 执行后
+
+![](https://s1.ax1x.com/2022/11/11/zCZa90.png)
+
+
+
+## 11.9 作用域和作用域链（Scope Chain）
 
 - **当进入到一个执行上下文时，执行上下文也会关联一个作用域链（Scope Chain）**
   - `作用域链是一个对象列表`，用于变量标识符的求值；
   - 当进入一个执行上下文时，这个`作用域链被创建，并且根据代码类型，添加一系列的对象`；
-
-
+  
+    ![](https://s1.ax1x.com/2022/11/11/zCZcNR.png)
 
 # 十二、JavaScript内存管理和闭包
 
@@ -2813,7 +2837,10 @@ window.onhashchange = function() {
 - JavaScript会在**定义数据时**为我们分配内存。
 - **但是内存分配方式是一样的吗？**
   - JS对于`原始数据类型内存的分配`会在执行时，直接在栈空间进行分配；
+  
   - JS对于`复杂数据类型内存的分配`会在堆内存中开辟一块空间，并且将这块空间的指针返回值变量引用；
+  
+    ![](https://s1.ax1x.com/2022/11/11/zCZ5uD.png)
 
 
 
@@ -2836,14 +2863,22 @@ window.onhashchange = function() {
 ### 12.4.1 引用计数
 
 - 当`一个对象有一个引用指向它`时，那么这个`对象的引用就+1`；
+
 - 当一个`对象的引用为0`时，这个对象就`可以被销毁掉`；
+
 - 这个算法有一个很大的弊端就是会产生循环引用；
+
+  ![](https://s1.ax1x.com/2022/11/11/zCZHUA.png)
 
 ### 12.4.2 标记清除
 
 - 标记清除的核心思路是`可达性（Reachability）`
+
 - 这个算法是设置一个`根对象（root object），垃圾回收器`会定期`从这个根`开始，找所有从根开始`有引用到的对象`，对于那些`没有引用到的对象，就认为是不可用的对象`；
+
 - 这个算法`可以很好的解决循环引用`的问题；
+
+  ![](https://s1.ax1x.com/2022/11/11/zCZjv8.png)
 
 ### 12.4.3 其他算法优化补充
 
@@ -2897,6 +2932,10 @@ window.onhashchange = function() {
   console.log(add10(5))
   ```
 
+### 12.6.1 闭包的内存泄漏测试
+
+![](https://s1.ax1x.com/2022/11/11/zCeEvT.png)
+
 
 
 ## 12.7 AO不使用的属性优化
@@ -2909,21 +2948,7 @@ window.onhashchange = function() {
 
   - 这里我打上了断点，我们可以在浏览器上看看结果；`name is not defined`
 
-    ```javascript
-    function makeAdder(count) {
-      let name = "why"
-      return function (num) {
-        debugger
-        return count + num
-      }
-    }
-    
-    const add10 = makeAdder(10)
-    console.log(add10(5))
-    console.log(add10(8))
-    ```
-
-
+    ![](https://s1.ax1x.com/2022/11/11/zCe8xK.png)
 
 # 十三、JavaScript中的函数
 
@@ -3138,25 +3163,25 @@ function pow2(n,m){
 
 ## 13.10 JavaScript纯函数
 
-### 13.10.1 纯函数的维基百科定义
+### 13.10.1 理解JavaScript纯函数
 
-- 在程序设计中，若一个函数`符合以下条件`，那么这个函数被称为纯函数：
-- 此函数`在相同的输入值时`，需`产生相同的输出`。
-- 函数的`输出和输入值以外的其他隐藏信息或状态无关`，也和`由I/O设备产生的外部输出`无关。
-- 该函数`不能有语义上可观察的函数副作用`，诸如`“触发事件”`，`使输出设备输出，或更改输出值以外物件的内容`等。
+- **纯函数的维基百科定义：**
+  - 在程序设计中，若一个函数`符合以下条件`，那么这个函数被称为纯函数：
+  - 此函数`在相同的输入值时`，需`产生相同的输出`。
+  - 函数的`输出和输入值以外的其他隐藏信息或状态无关`，也和`由I/O设备产生的外部输出`无关。
+  - 该函数`不能有语义上可观察的函数副作用`，诸如`“触发事件”`，`使输出设备输出，或更改输出值以外物件的内容`等。
 
-### 13.10.2 简单总结
+- **简单总结:**
+  - `确定的输入，一定会产生确定的输出`；
+  - `函数在执行过程中，不能产生副作用`；
 
-- `确定的输入，一定会产生确定的输出`；
-- `函数在执行过程中，不能产生副作用`；
-
-### 13.10.3 副作用概念的理解
+### 13.10.2 副作用概念的理解
 
 - **副作用（side effect）**其实本身是医学的一个概念，比如我们经常说吃什么药本来是为了治病，可能会产生一些其他的副作用；
 - 在计算机科学中，也引用了副作用的概念，表示`在执行一个函数`时，除了`返回函数值`之外，还对`调用函数产生了附加的影响`，比如`修改了全局变量，修改参数或者改变外部的存储`;
 - **纯函数在执行的过程中就是不能产生这样的副作用，副作用往往是产生`bug的 “温床”`。**
 
-### 13.10.4 纯函数的案例
+### 13.10.3 纯函数的案例
 
 - **我们来看一个对数组操作的两个函数：**
 
@@ -3173,7 +3198,7 @@ function pow2(n,m){
   var newNames2 = names.splice(0, 2)
   ```
 
-### 13.10.5 纯函数的作用和优势
+### 13.10.4 纯函数的作用和优势
 
 - 可以`安心的编写和安心的使用`；
 - 在`写的时候`保证了函数的纯度，只是`单纯实现自己的业务逻辑`即可，`不需要关心传入的内容`是如何获得的或者依赖`其他的外部变量`是否已经发生了修改；
@@ -3691,16 +3716,35 @@ delete info.age
 
 - **数据数据描述符有如下四个特性：**
 - **[[Configurable]]**：表示属性是否可以通过 delete 删除属性，是否可以修改它的特性，或者是否可以将它修改为存取属性描述符；
+  
   - 当我们直接在一个对象上定义某个属性时，这个属性的**[[Configurable]]**为`true`；
   - 当我们通过属性描述符定义一个属性时，这个属性的**[[Configurable]]**默认为`false`；
 - **[[Enumerable]]**：表示属性是否可以通过`for-in`或者`Object.keys()`返回该属性；
+  
   - 当我们直接在一个对象上定义某个属性时，这个属性的**[[Enumerable]]**为`true`；
   - 当我们通过属性描述符定义一个属性时，这个属性的**[[Enumerable]]**默认为`false`；
 - **[[Writable]]**：表示是否可以修改属性的值；
+  
   - 当我们直接在一个对象上定义某个属性时，这个属性的**[[Writable]]**为`true`；
   - 当我们通过属性描述符定义一个属性时，这个属性的**[[Writable]]**默认为`false`；
 - **[[value]]**：属性的value值，读取属性时会返回该值，修改属性时，会对其进行修改；
+  
   - 默认情况下这个值是undefined；
+  
+    ```javascript
+    const obj = {
+      name: "why",
+      age: 18,
+      height: 1.88
+    }
+    
+    Object.defineProperty(obj, "address", {
+      Configurable:false,
+      Enumerable:false,
+      Writable:false,
+      value: '湖南'
+    })
+    ```
 
 ### 14.7.5 存取属性描述符
 
@@ -3839,7 +3883,7 @@ delete info.age
 
 # 十五、JavaScript ES5中实现继承
 
-## 15.1 JavaScript中的原型
+## 15.1 对象和函数的原型
 
 ### 15.1.1 认识对象的原型
 
@@ -3859,7 +3903,10 @@ delete info.age
 - **新的概念：所有的函数都有一个prototype的属性（注意：不是__proto__）**
 
   ```javascript
-  function foo(){}foo.prototype
+  function foo(){}
+  
+  // 所有的函数都有一个属性，叫prototype
+  console.log(foo.prototype)
   ```
 
 - 是不是因为函数是一个对象，所以它有prototype的属性呢？
@@ -3902,17 +3949,19 @@ delete info.age
 
 - 如果希望constructor指向Person，那么可以手动添加：
 
-- 下面的方式虽然可以, 但是也会造成constructor的[[Enumerable]]特性被设置了true.
+- 方式一虽然可以, 但是也会造成constructor的[[Enumerable]]特性被设置了true.
 
   - 默认情况下, 原生的constructor属性是不可枚举的.
   - 如果希望解决这个问题, 就可以使用我们前面介绍的Object.defineProperty()函数了.
 
   ```javascript
+  // 方式一
   Person.prototype = {
     constructor: Person,
     name: 'czl'
   }
   
+  // 方式二
   Object.defineProperty(Person.prototype, "constructor", {
     enumerable: false,
     value: Person
@@ -3961,24 +4010,7 @@ delete info.age
 
 - 这样的原型嵌套称为原型链。
 
-  ```javascript
-  var obj = {
-    name: "why",
-    age: 18
-  }
-  
-  obj.__proto__ = {
-    
-  }
-  
-  obj.__proto__.__proto__ = {
-    
-  }
-  
-  obj.__proto__.__proto__.__proto__ = {
-    address: '北京市'
-  }
-  ```
+  ![](https://s1.ax1x.com/2022/11/11/zCmQeg.png)
 
 ### 15.6.1 Object的原型
 
@@ -3998,7 +4030,15 @@ delete info.age
   - 特殊一：`该对象有原型属性`，但是它的原型属性已经指向的是null，也就是已经是顶层原型了；
   - 特殊二：`该对象上有很多默认的属性和方法`；
 
-### 15.6.2 Object是所有类的父类
+### 15.6.2 创建Object对象的内存图
+
+![](https://s1.ax1x.com/2022/11/11/zCm8Fs.png)
+
+### 15.6.3 原型链关系的内存图
+
+![](https://s1.ax1x.com/2022/11/11/zCmGYn.png)
+
+### 15.6.4 Object是所有类的父类
 
 - **从我们上面的Object原型我们可以得出一个结论：`原型链最顶层的原型对象就是Object的原型对象`**
 
@@ -4006,7 +4046,7 @@ delete info.age
 
 
 
-## 15.7 组合式继承
+## 15.7 原型链继承
 
 ### 15.7.1 通过原型链实现继承
 
@@ -4040,12 +4080,20 @@ Student.prototype.studying = function() {
 }
 ```
 
-### 15.7.2 原型链继承的弊端
+### 15.7.2 继承创建对象的内存图
+
+![](https://s1.ax1x.com/2022/11/11/zCmtS0.png)
+
+### 15.7.3 原型链继承的弊端
 
 - **目前有一个很大的弊端：某些属性其实是保存在p对象上的;**
   - 第一，我们通过`直接打印对象是看不到这个属性`的；
   - 第二，这个属性`会被多个对象共享，如果这个对象是一个引用类型，那么就会造成问题`；
   - 第三，`不能给Person传递参数`（让每个stu有自己的属性），因为这个对象是一次性创建的（没办法定制化）；
+
+
+
+## 15.8 组合继承
 
 ### 15.7.3 借用构造函数继承
 
@@ -4075,7 +4123,7 @@ Student.prototype.studying = function() {
 
 
 
-## 15.8 寄生组合式继承
+## 15.9 寄生组合式继承
 
 ### 15.8.1 原型式继承函数
 
@@ -5751,7 +5799,7 @@ console.log(stu.__proto__ === Animal.prototype) // true
 
 
 
-## 19.3 Promise的各个状态
+## 19.3 Promise的三个状态
 
 - **Promise使用过程，我们可以将它划分成三个状态：**
   - `待定（pending）`: 初始状态，既没有被兑现，也没有被拒绝；
