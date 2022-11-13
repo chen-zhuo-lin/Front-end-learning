@@ -41,11 +41,11 @@
 
 - **我们可以将上面的案例用Proxy来实现一次：**
 
-  - 首先，我们需要 **`new Proxy对象`**，并且 **传入需要侦听的对象以及一个处理对象**，可以称之为 **`handler`**；
+  - 首先，我们需要 **new Proxy对象**，并且 **传入需要侦听的对象以及一个处理对象**，可以称之为 `handler`；
 
     `const p = new Proxy(target, handler)`
 
-  - 其次，**`我们之后的操作都是直接对Proxy的操作`**，而**`不是原有的对象`**，因为我们需要在handler里面进行侦听；
+  - 其次，**我们之后的操作都是直接对Proxy的操作**，而**不是原有的对象**，因为我们需要在`handler`里面进行侦听；
 
     ```javascript
     const obj = {
@@ -96,12 +96,12 @@
 
 ### 3.1 Reflect的作用
 
-- **Reflect也是ES6新增的一个API，它是`一个对象`，字面的意思是`反射`。**
+- **Reflect也是ES6新增的一个API，它是一个对象，字面的意思是反射。**
 - **那么这个Reflect有什么用呢？**
   - 它主要提供了很多 **操作JavaScript对象的方法**，有点像 **Object中操作对象的方法**；
-  - 比如 **`Reflect.getPrototypeOf(target)`** 类似于 **`Object.getPrototypeOf()`**；
-  - 比如 **`Reflect.defineProperty(target, propertyKey, attributes)`** 类似于  **`Object.defineProperty()`**；
-- **如果我们有Object可以做这些操作，那么`为什么还需要有Reflect这样的新增对象`？**
+  - 比如 `Reflect.getPrototypeOf(target)` 类似于 `Object.getPrototypeOf()`；
+  - 比如 `Reflect.defineProperty(target, propertyKey, attributes)` 类似于  `Object.defineProperty()`；
+- **如果我们有Object可以做这些操作，那么为什么还需要有Reflect这样的新增对象？**
   - 因为在早期的ECMA规范中没有考虑到这种对 **对象本身的操作如何设计会更加规范**，所以 **将这些API放到了Object上面**；
   - 但是 **Object作为一个构造函数**，这些操作实际上 **放到它身上并不合适**；
   - 另外还包含一些 **类似于` in`、`delete`操作符**，让JS看起来是会有一些奇怪的；
